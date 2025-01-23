@@ -1,0 +1,288 @@
+.container {
+    width: 100%;
+    display: flex;
+    overflow: auto;
+    min-height: 100vh;
+    align-items: center;
+    flex-direction: column;
+  }
+  .travel-agency-landing-page-ui {
+    width: 100%;
+    height: 982px;
+    display: flex;
+    overflow: hidden;
+    align-items: flex-start;
+    flex-shrink: 0;
+    background-color: rgba(255, 255, 255, 1);
+  }
+  .hero {
+    top: -112.455810546875px;
+    left: -379.0029296875px;
+    width: 1935.66650390625px;
+    height: 1015.051513671875px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+  }
+  .decore {
+    top: 0px;
+    left: 0px;
+    width: 1935.66650390625px;
+    height: 787.4094848632812px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+  }
+  .ellipse8 {
+    top: 58.460914611816406px;
+    left: 0px;
+    width: 432px;
+    height: 448px;
+    opacity: 0.30;
+    position: absolute;
+  }
+  .decore1 {
+    top: 0px;
+    left: 1284px;
+    width: 692px;
+    height: 787px;
+    position: absolute;
+  }
+  .dropdown {
+    top: 162.98953247070312px;
+    left: 1751.71875px;
+    width: 35.405670166015625px;
+    height: 20px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+  }
+  .text {
+    color: var(--dl-color-default-1st);
+    height: auto;
+    position: absolute;
+    font-size: 15.340594291687012px;
+    font-style: Medium;
+    text-align: left;
+    font-family: Google Sans;
+    font-weight: 500;
+    line-height: normal;
+    font-stretch: normal;
+    text-decoration: none;
+  }
+  .vector1 {
+    top: 10.46630859375px;
+    left: 27.2841796875px;
+    width: 8px;
+    height: 4px;
+    position: absolute;
+  }
+  .hero-content {
+    top: 252.45584106445312px;
+    left: 408.0029296875px;
+    width: 769px;
+    height: 762.5956420898438px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+  }
+  .cta {
+    top: 709px;
+    left: 127px;
+    width: 261px;
+    height: 53.59566879272461px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+  }
+  .cta1 {
+        top: 0;
+        left: 0;
+        width: 261px;
+        height: 53.596px;
+        display: flex;
+        position: absolute;
+        align-items: center;
+        justify-content: center; /* Added to center the text horizontally */
+        flex-shrink: 1;
+        background-color: rgba(139, 202, 255, 1);
+        border-radius: 10px;
+        font-size: 18px; /* Adjust the font size as needed */
+      }
+
+  .text02 {
+    left: 20px;
+    color: rgba(223, 105, 81, 1);
+    width: 687px;
+    height: auto;
+    position: absolute;
+    font-size: 40.049999237060547px;
+    font-style: Bold;
+    text-align: left;
+    font-family: Poppins;
+    font-weight: 700;
+    line-height: normal;
+    font-stretch: normal;
+    text-decoration: none;
+  }
+  .text04 {
+    top: 488px;
+    left: 63px;
+    color: rgba(94, 98, 130, 1);
+    width: 476px;
+    height: auto;
+    position: absolute;
+    font-size: 25.440000534057617px;
+    font-style: Medium;
+    text-align: left;
+    font-family: Poppins;
+    font-weight: 500;
+    line-height: 27.071638107299805px;
+    font-stretch: normal;
+    text-decoration: none;
+  }
+  .decore2 {
+    top: 135px;
+    left: 216px;
+    width: 347.4193420410156px;
+    height: 10.828655242919922px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+    background-color: rgba(196, 196, 196, 1);
+  }
+  .vector {
+    top: -23.7198486328125px;
+    left: 17.2913818359375px;
+    width: 341px;
+    height: 60px;
+    position: absolute;
+  }
+  .text06 {
+    top: 62px;
+    left: 20px;
+    color: var(--dl-color-default-1st);
+    height: auto;
+    position: absolute;
+    font-size: 60.79999923706055px;
+    font-style: Bold;
+    text-align: left;
+    font-family: Volkhov;
+    font-weight: 700;
+    line-height: 80.3125228881836px;
+    font-stretch: normal;
+    text-decoration: none;
+  }
+  .pexelslizasummer6347738removebgpreview1 {
+    top: 280px;
+    left: 788px;
+    width: 458px;
+    height: 699px;
+    position: absolute;
+  }
+  .se45259logoorig1 {
+    top: 14px;
+    left: 60px;
+    width: 508px;
+    height: 91px;
+    position: absolute;
+  }
+  .pexelscdc3992933removebgpreview1 {
+    top: 175px;
+    left: 1195px;
+    width: 227px;
+    height: 248px;
+    position: absolute;
+  }
+  .charity11 {
+    top: 855px;
+    left: 1195px;
+    width: 110px;
+    height: 119px;
+    position: absolute;
+  }
+  .dollar11 {
+    top: 854px;
+    left: 1340px;
+    width: 100px;
+    height: 100px;
+    position: absolute;
+  }
+  .text17 {
+    top: 853px;
+    left: 170px;
+    color: rgba(0, 0, 0, 1);
+    width: 211px;
+    height: auto;
+    position: absolute;
+    font-size: 29.239999771118164px;
+    font-style: Bold;
+    text-align: center;
+    font-family: Inria Serif;
+    font-weight: 700;
+    line-height: normal;
+    font-stretch: normal;
+    text-decoration: none;
+  }
+  .sign-in {
+    top: 29px;
+    left: 969px;
+    width: 149.5454559326172px;
+    height: 47px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+  }
+  .text19 {
+    top: 9.399999618530273px;
+    left: 42.371212005615234px;
+    color: rgba(26, 143, 227, 1);
+    width: 64px;
+    height: auto;
+    position: absolute;
+    font-size: 16px;
+    font-style: SemiBold;
+    text-align: left;
+    font-family: Plus Jakarta Sans;
+    font-weight: 600;
+    line-height: normal;
+    font-stretch: normal;
+    text-decoration: none;
+  }
+  .sign-up {
+    top: 29px;
+    left: 1184.45458984375px;
+    width: 149.5454559326172px;
+    height: 47px;
+    display: flex;
+    position: absolute;
+    align-items: flex-start;
+    flex-shrink: 1;
+    background-color: rgba(26, 143, 227, 1);
+    border-radius: 10px;
+  }
+  .text21 {
+    top: 9.399999618530273px;
+    left: 38.63257598876953px;
+    color: rgba(255, 255, 255, 1);
+    width: 72px;
+    height: auto;
+    position: absolute;
+    font-size: 16px;
+    font-style: SemiBold;
+    text-align: left;
+    font-family: Plus Jakarta Sans;
+    font-weight: 600;
+    line-height: normal;
+    font-stretch: normal;
+    text-decoration: none;
+  }
+  
+  
