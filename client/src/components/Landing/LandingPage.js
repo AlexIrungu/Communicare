@@ -28,11 +28,7 @@ const LandingPage = (props) => {
             <span className={styles['text']}>
               {/* <span>EN</span> */}
             </span>
-            {/* <img
-              src="/playground_assets/vector12038-tdm.svg"
-              alt="Vector12038"
-              className={styles['vector1']}
-            /> */}
+            
           </div>
           <div className={styles['hero-content']}>
             <div className={styles['cta']}>
@@ -51,13 +47,7 @@ const LandingPage = (props) => {
                 we&apos;ve got you covered
               </span>
             </span>
-            {/* <div className={styles['decore2']}>
-              <img
-                src="/playground_assets/vector2039-tcjg.svg"
-                alt="Vector2039"
-                className={styles['vector']}
-              />
-            </div> */}
+            
             <span className={styles['text06']}>
               <span>
                 <span>
@@ -90,7 +80,8 @@ const LandingPage = (props) => {
         </div>
         <img
           src={liza}
-          alt="pexelslizasummer6347738removebgpreview12039"          className={styles['pexelslizasummer6347738removebgpreview1']}
+          alt="pexelslizasummer6347738removebgpreview12039"          
+          className={styles['pexelslizasummer6347738removebgpreview1']}
           />
           <img
             src="https://content.energage.com/company-images/SE45259/SE45259_logo_orig.png"

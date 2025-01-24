@@ -1,0 +1,9 @@
+<!-- app/views/diseases/show.html.erb -->
+<h1><%= @disease.name %></h1>
+<!-- Display other disease details -->
+
+<!-- Display the QR code -->
+<%= image_tag generate_qr_code_disease_path(@disease), alt: 'Disease QR Code' %>
+
+<!-- Add a link or button to initiate the QR code scanning -->
+<%= link_to 'Scan QR Code', qr_scanner_scan_path, class: 'btn btn-primary' %>

@@ -1,0 +1,18 @@
+current directory: /home/alex-irungu/Documents/projects/communicare/Backend/vendor/bundle/ruby/3.2.0/gems/stringio-3.1.2/ext/stringio
+/usr/bin/ruby3.2 -I/usr/lib/ruby/vendor_ruby extconf.rb
+creating Makefile
+
+current directory: /home/alex-irungu/Documents/projects/communicare/Backend/vendor/bundle/ruby/3.2.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250125-123291-kcx10c sitelibdir\=./.gem.20250125-123291-kcx10c clean
+
+current directory: /home/alex-irungu/Documents/projects/communicare/Backend/vendor/bundle/ruby/3.2.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250125-123291-kcx10c sitelibdir\=./.gem.20250125-123291-kcx10c
+compiling stringio.c
+linking shared-object stringio.so
+
+current directory: /home/alex-irungu/Documents/projects/communicare/Backend/vendor/bundle/ruby/3.2.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250125-123291-kcx10c sitelibdir\=./.gem.20250125-123291-kcx10c install
+/usr/bin/install -c -m 0755 stringio.so ./.gem.20250125-123291-kcx10c
+
+current directory: /home/alex-irungu/Documents/projects/communicare/Backend/vendor/bundle/ruby/3.2.0/gems/stringio-3.1.2/ext/stringio
+make DESTDIR\= sitearchdir\=./.gem.20250125-123291-kcx10c sitelibdir\=./.gem.20250125-123291-kcx10c clean

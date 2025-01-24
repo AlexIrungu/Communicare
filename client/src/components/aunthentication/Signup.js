@@ -86,11 +86,12 @@ const CustomLink = styled(Link)`
 
 function Signup() {
   const [formData, setFormData] = useState({
-    First_name: "",
-    Last_name: "",
+    first_name: "",
+    last_name: "",
     email: "",
     password: "",
   });
+  
   const [message, setMessage] = useState("");
   const nav = useNavigate();
 
@@ -103,12 +104,16 @@ function Signup() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    if (!formData.First_name || !formData.Last_name || !formData.email || !formData.password) {
+    
+    // Check for lowercase field names in formData
+    if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
       setMessage("Please fill in all fields");
       return;
     }
-
-    fetch("https://communicables.onrender.com/users", {
+  
+    console.log("Submitting:", formData); // Add this for debugging
+    
+    fetch("http://127.0.0.1:3001/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -123,14 +128,17 @@ function Signup() {
         }
       })
       .then((data) => {
+        console.log("Signup successful:", data);  // Log the API response here
         nav("/home");
         setMessage("Signup successful");
       })
       .catch((error) => {
-        setMessage("Signup failed");
-        console.error(error);
+        console.error("Error:", error);
+        setMessage("Signup failed. Please check the console for more details.");
       });
   }
+  
+  
 
   return (
     <Container>
@@ -138,33 +146,34 @@ function Signup() {
       <Form
 onSubmit={handleSubmit}>
 <Input
-       type="text"
-       name="First_name"
-       placeholder="First Name"
-       value={formData.first_name}
-       onChange={handleChange}
-     />
+  type="text"
+  name="first_name"
+  placeholder="First Name"
+  value={formData.first_name}
+  onChange={handleChange}
+/>
 <Input
-       type="text"
-       name="Last_name"
-       placeholder="Last Name"
-       value={formData.Last_name}
-       onChange={handleChange}
-     />
+  type="text"
+  name="last_name"
+  placeholder="Last Name"
+  value={formData.last_name}
+  onChange={handleChange}
+/>
 <Input
-       type="email"
-       name="email"
-       placeholder="Email"
-       value={formData.email}
-       onChange={handleChange}
-     />
+  type="email"
+  name="email"
+  placeholder="Email"
+  value={formData.email}
+  onChange={handleChange}
+/>
 <Input
-       type="password"
-       name="password"
-       placeholder="Password"
-       value={formData.password}
-       onChange={handleChange}
-     />
+  type="password"
+  name="password"
+  placeholder="Password"
+  value={formData.password}
+  onChange={handleChange}
+/>
+
 <Button type="submit">Sign up</Button>
 {message && <Message isError>{message}</Message>}
 </Form>
