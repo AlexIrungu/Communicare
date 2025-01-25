@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import DonationForm from '../Diseases/Donation';
+import DonationForm from '../Diseases/DonationForm';
 import Map from '../Map';
 
 const Areas = () => {

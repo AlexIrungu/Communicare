@@ -1,69 +1,61 @@
-import React from "react";
-
-import {
-  Nav,
-  NavLink,
-  Bars,
-  NavMenu,
-  NavBtn,
-  NavBtnLink,
-} from "./NavbarElements";
+import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ setUser, user }) => {
-  function handleLogoutClick() {
-    fetch("/logout", { method: "DELETE" }).then((r) => {
-      if (r.ok) {
-        setUser(null);
-        window.location = "/log-in";
-      }
-    });
-  }
+  const handleLogout = () => {
+    fetch('/logout', { method: 'DELETE' })
+      .then(r => {
+        if (r.ok) {
+          setUser(null);
+          window.location = '/log-in';
+        }
+      });
+  };
+
+  const links = [
+    { to: '/', label: 'Home' },
+    { to: '/about', label: 'About' },
+    { to: '/blog', label: 'Blog' },
+    { to: '/donation', label: 'Donation' },
+    { to: '/contacts', label: 'Contacts' },
+    { to: '/map', label: 'Map' },
+    { to: '/diseases', label: 'Diseases' },
+    { to: '/areas', label: 'Areas' },
+    { to: '/areadetails', label: 'Area Details' },
+    { to: '/donated', label: 'Donate' },
+    { to: '/testimonial', label: 'Testimonial' },
+    { to: '/medicine', label: 'Medicine' },
+    { to: '/area', label: 'Area Admin' },
+    { to: '/admin', label: 'Dashboard' },
+    { to: '/login', label: 'Login' },
+    { to: '/signup', label: 'Sign Up' }
+  ];
 
   return (
-    <>
-      <Nav>
-        <Bars />
-        <NavMenu>
-          <NavLink to="/admin">Admin Dashboard</NavLink>
-          {/* <NavLink to="/admin"></NavLink> */}
-          {/* <NavLink to="/contact">Contact Us</NavLink> */}
-
-          {user ? (
-            <>
-              <NavLink to="/blog">Blog</NavLink>
-            </>
-          ) : (
-            <></>
+    <nav className="bg-gray-800 py-4">
+      <div className="container mx-auto flex justify-between items-center">
+        <Link to="/" className="text-white text-xl font-bold">Admin Dashboard</Link>
+        <div className="flex items-center space-x-4">
+          {links.map(link => (
+            <Link 
+              key={link.to}
+              to={link.to}
+              className={`text-white hover:text-gray-300 px-3 py-2 rounded-md transition-colors ${user ? '' : 'bg-blue-600 hover:bg-blue-700'}`}
+            >
+              {link.label}
+            </Link>
+          ))}
+          {user && (
+            <button 
+              onClick={handleLogout}
+              className="bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700 transition-colors"
+            >
+              Logout
+            </button>
           )}
-        </NavMenu>
-
-        <NavBtn>
-          {user ? (
-            <>
-              <NavBtnLink
-                to="/logout"
-                className="btn btn-primary btn-sm active"
-                onClick={() => handleLogoutClick()}
-              >
-                Logout
-              </NavBtnLink>
-            </>
-          ) : (
-            <>
-              <NavBtnLink to="/login" className="btn btn-primary btn-sm active">
-                Login
-              </NavBtnLink>
-              <NavBtnLink
-                to="/signup"
-                className="btn btn-primary btn-sm active"
-              >
-                Sign Up
-              </NavBtnLink>
-            </>
-          )}
-        </NavBtn>
-      </Nav>
-    </>
+        </div>
+      </div>
+    </nav>
   );
 };
 

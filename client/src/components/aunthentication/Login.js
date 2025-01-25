@@ -89,7 +89,7 @@ function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    role: "user", // default role is "user"
+    role: "user",
   });
   const [message, setMessage] = useState("");
   const nav = useNavigate();
@@ -103,66 +103,67 @@ function Login() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    // validate form data, e.g. check if email and password are not empty
     if (!formData.email || !formData.password) {
       setMessage("Please enter your email and password");
       return;
     }
 
     try {
-      // send login request to backend with the selected role
-      const response = await axios.post("https://communicables.onrender.com/login", {
+      const response = await axios.post("http://localhost:3001/login", {
         email: formData.email,
         password: formData.password,
         role: formData.role,
       });
 
-      // navigate to appropriate dashboard if login is successful
       if (response.status === 200) {
         if (formData.role === "admin") {
           nav("/nav");
         } else {
           nav("/home");
           setMessage("Login successful");
-}
-}
-} catch (error) {
-// display error message if login request fails
-setMessage(error.response.data.message);
-}
-}
+        }
+      }
+    } catch (error) {
+      setMessage(error.response?.data.message || "Login failed");
+    }
+  }
 
-return (
-<Container>
-<Title>Login</Title>
-<Form onSubmit={handleSubmit}>
-<Input
-       type="email"
-       name="email"
-       placeholder="Email"
-       value={formData.email}
-       onChange={handleChange}
-     />
-<Input
-       type="password"
-       name="password"
-       placeholder="Password"
-       value={formData.password}
-       onChange={handleChange}
-     />
-<label htmlFor="role">Login as:</label>
-<select name="role" id="role" value={formData.role} onChange={handleChange}>
-<option value="user">User</option>
-<option value="admin">Admin</option>
-</select>
-<Button type="submit">Login</Button>
-</Form>
-<Message isError={message.includes("Error")}>{message}</Message>
-<LinkWrapper>
-<CustomLink to="/signup">Don't have an account? Signup here</CustomLink>
-</LinkWrapper>
-</Container>
-);
+  return (
+    <Container>
+      <Title>Login</Title>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        <Input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
+        <label htmlFor="role">Login as:</label>
+        <select
+          name="role"
+          id="role"
+          value={formData.role}
+          onChange={handleChange}
+        >
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
+        <Button type="submit">Login</Button>
+      </Form>
+      <Message isError={message.includes("Error")}>{message}</Message>
+      <LinkWrapper>
+        <CustomLink to="/signup">Don't have an account? Signup here</CustomLink>
+      </LinkWrapper>
+    </Container>
+  );
 }
 
 export default Login;

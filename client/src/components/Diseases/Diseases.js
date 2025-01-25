@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import './Diseases.css';
 import { Card, CardImg, CardText, CardBody, CardTitle } from 'reactstrap';
 import QRCode from 'react-qr-code';
 import { QrReader } from 'react-qr-reader';

@@ -91,7 +91,7 @@ function Signup() {
     email: "",
     password: "",
   });
-  
+
   const [message, setMessage] = useState("");
   const nav = useNavigate();
 
@@ -104,15 +104,20 @@ function Signup() {
 
   function handleSubmit(e) {
     e.preventDefault();
-    
+
     // Check for lowercase field names in formData
-    if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
+    if (
+      !formData.first_name ||
+      !formData.last_name ||
+      !formData.email ||
+      !formData.password
+    ) {
       setMessage("Please fill in all fields");
       return;
     }
-  
+
     console.log("Submitting:", formData); // Add this for debugging
-    
+
     fetch("http://127.0.0.1:3001/users", {
       method: "POST",
       headers: {
@@ -128,7 +133,7 @@ function Signup() {
         }
       })
       .then((data) => {
-        console.log("Signup successful:", data);  // Log the API response here
+        console.log("Signup successful:", data); // Log the API response here
         nav("/home");
         setMessage("Signup successful");
       })
@@ -137,54 +142,50 @@ function Signup() {
         setMessage("Signup failed. Please check the console for more details.");
       });
   }
-  
-  
 
   return (
     <Container>
       <Title>Sign up</Title>
-      <Form
-onSubmit={handleSubmit}>
-<Input
-  type="text"
-  name="first_name"
-  placeholder="First Name"
-  value={formData.first_name}
-  onChange={handleChange}
-/>
-<Input
-  type="text"
-  name="last_name"
-  placeholder="Last Name"
-  value={formData.last_name}
-  onChange={handleChange}
-/>
-<Input
-  type="email"
-  name="email"
-  placeholder="Email"
-  value={formData.email}
-  onChange={handleChange}
-/>
-<Input
-  type="password"
-  name="password"
-  placeholder="Password"
-  value={formData.password}
-  onChange={handleChange}
-/>
+      <Form onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          name="first_name"
+          placeholder="First Name"
+          value={formData.first_name}
+          onChange={handleChange}
+        />
+        <Input
+          type="text"
+          name="last_name"
+          placeholder="Last Name"
+          value={formData.last_name}
+          onChange={handleChange}
+        />
+        <Input
+          type="email"
+          name="email"
+          placeholder="Email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        <Input
+          type="password"
+          name="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+        />
 
-<Button type="submit">Sign up</Button>
-{message && <Message isError>{message}</Message>}
-</Form>
-<LinkWrapper>
-<Message>
-Already have an account?{" "}
-<CustomLink to="/login">Log in</CustomLink>
-</Message>
-</LinkWrapper>
-</Container>
-);
+        <Button type="submit">Sign up</Button>
+        {message && <Message isError>{message}</Message>}
+      </Form>
+      <LinkWrapper>
+        <Message>
+          Already have an account? <CustomLink to="/login">Log in</CustomLink>
+        </Message>
+      </LinkWrapper>
+    </Container>
+  );
 }
 
 export default Signup;

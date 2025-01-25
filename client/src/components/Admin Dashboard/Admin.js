@@ -2,8 +2,8 @@ import React from "react";
 import { makeStyles } from "@mui/styles";
 import { Drawer, List, ListItem, ListItemIcon, ListItemText, Toolbar, Typography, Divider } from '@mui/material';
 import UserTable from "./User";
-import AreaTable from "./AreaAdmin";
-import ComAdmin from "./communicable";
+import AreaTable from "./AreaTable";
+import ComAdmin from "./ComAdmin";
 
 const drawerWidth = 240;
 
@@ -32,7 +32,6 @@ const useStyles = makeStyles((theme) => ({
 
 const Dashboard = () => {
   const classes = useStyles();
-
   const [currentPage, setCurrentPage] = React.useState("User Management");
 
   const handlePageChange = (page) => {
@@ -42,9 +41,9 @@ const Dashboard = () => {
   const renderPage = () => {
     switch (currentPage) {
       case "User Management":
-        return <UserTable/>;
+        return <UserTable />;
       case "Area":
-        return <AreaTable/>;
+        return <AreaTable />;
       case "Communicable Disease":
         return <ComAdmin />;
       default:
@@ -59,40 +58,19 @@ const Dashboard = () => {
           Admin Dashboard
         </Typography>
       </Toolbar>
-      <Drawer
-        className={classes.drawer}
-        variant="permanent"
-        classes={{
-          paper: classes.drawerPaper,
-        }}
-      >
+      <Drawer className={classes.drawer} variant="permanent" classes={{ paper: classes.drawerPaper }}>
         <Toolbar />
         <div className={classes.drawerContainer}>
           <List>
-            <ListItem
-              button
-              key="User Management"
-              onClick={() => handlePageChange("User Management")}
-            >
-              <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
-              <ListItemText primary="User Management" />
-            </ListItem>
-            <ListItem
-              button
-              key="Area"
-              onClick={() => handlePageChange("Area")}
-            >
-              <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
-              <ListItemText primary="Area" />
-            </ListItem>
-            <ListItem
-              button
-              key="Communicable Disease"
-              onClick={() => handlePageChange("Communicable Disease")}
-            >
-              <ListItemIcon>{/* <InboxIcon /> */}</ListItemIcon>
-              <ListItemText primary="Communicable Disease" />
-            </ListItem>
+            {[
+              { label: "User Management", component: <UserTable /> },
+              { label: "Area", component: <AreaTable /> },
+              { label: "Communicable Disease", component: <ComAdmin /> }
+            ].map(({ label, component }) => (
+              <ListItem button key={label} onClick={() => handlePageChange(label)}>
+                <ListItemText primary={label} />
+              </ListItem>
+            ))}
           </List>
           <Divider />
         </div>
