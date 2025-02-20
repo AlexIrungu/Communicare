@@ -22,7 +22,7 @@ const Navbar = () => {
                 src="/src/assets/logo.svg" 
                 alt="Logo" 
                 className="h-8 w-auto mr-2"
-                onError={(e) => { e.target.onerror = null; e.target.src = 'https://via.placeholder.com/32'; }}
+                onError={(e) => { e.target.onerror = null; e.target.src = 'https://placehold.co/32x32'; }}
               />
               <span className="font-semibold text-lg">Disease Prevention</span>
             </Link>

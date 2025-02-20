@@ -1,23 +1,24 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS", 5) %>
 
 development:
   <<: *default
   database: communicable_development
-  pool: 5
-  username: postgres
-  password: Nairobi11
+  username: <%= ENV.fetch("DB_USERNAME", "postgres") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "Nairobi11") %>  # Replace with your actual password as default
   host: localhost
   port: 5432
 
 test:
   <<: *default
   database: communicable_test
+  username: <%= ENV.fetch("DB_USERNAME", "postgres") %>
+  password: <%= ENV.fetch("DB_PASSWORD", "Nairobi11") %>  # Same here
 
 production:
   <<: *default
   database: communicare_production
   username: communicare
-  password: <%= ENV["COMMUNICARE_DATABASE_PASSWORD"] %>
+  password: <%= ENV.fetch("COMMUNICARE_DATABASE_PASSWORD") %>

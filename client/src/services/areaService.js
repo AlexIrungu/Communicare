@@ -1,23 +1,26 @@
 // src/services/areaService.js
 import axios from 'axios';
 
-const API_URL = 'http://localhost:3001/api/v1';
+const BASE_URL = 'http://localhost:3001/api/v1';
 
-const areaService = {
-  getAllAreas: async () => {
-    const response = await axios.get(`${API_URL}/areas`);
-    return response;
-  },
-
+export const areaService = {
   getHighRiskAreas: async () => {
-    const response = await axios.get(`${API_URL}/areas/high_risk`);
-    return response;
+    try {
+        const response = await axios.get('http://localhost:3001/api/v1/areas/high_risk');
+        return response.data;
+      } catch (error) {
+        console.error('Error fetching high risk areas:', error);
+        throw error;
+      }
   },
 
-  getAreaById: async (id) => {
-    const response = await axios.get(`${API_URL}/areas/${id}`);
-    return response;
-  },
+  getAllAreas: async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/areas`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching areas:', error);
+      throw error;
+    }
+  }
 };
-
-export default areaService;

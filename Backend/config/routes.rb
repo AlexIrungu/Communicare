@@ -1,19 +1,30 @@
+# config/routes.rb
 Rails.application.routes.draw do
-  resources :users, only: [:create, :show, :update, :destroy, :index]
-  post '/login', to: 'sessions#create'
-  delete '/logout', to: 'sessions#destroy'
-  get "/me", to: "users#show"
-
-  resources :communicable_diseases do
-    member do
-      get :generate_qr_code
+  namespace :api do
+    namespace :v1 do
+      resources :users, only: [:create, :show, :index] do
+        patch 'update_role', on: :member
+      end
+      
+      resources :diseases do
+        get 'featured', on: :collection
+      end
+      
+      resources :areas do
+        get 'high_risk', on: :collection
+        resources :donations, only: [:index, :create]
+        resources :reviews, only: [:index, :create]
+      end
+      
+      resources :reviews, only: [:index, :update, :destroy]
+      
+      resources :donations, only: [:index, :show] do
+        get 'recent', on: :collection
+      end
+      
+      post "/login", to: "sessions#create"
+      delete "/logout", to: "sessions#destroy"
+      get "/me", to: "users#show"
     end
   end
-
-  resources :areas, only: [:create, :show, :update, :destroy, :index] do
-    resources :donations, only: [:create, :new]
-  end
-  
-  resources :donations, only: [:index, :show, :create, :update]
-  resources :reviews, only: [:index, :show, :create, :update, :destroy]
 end

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import areaService from '../../services/areaService';
+import { areaService } from '../../services/areaService';
 
 // Async thunks
 export const fetchAllAreas = createAsyncThunk(

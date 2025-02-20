@@ -9,15 +9,17 @@ gem 'rails', '~> 7.0.4.3'
 
 # Use sqlite3 as the database for Active Record
 gem 'pg'
-gem "rack-cors"
+
 
 gem 'railties'
 
-
+gem 'active_model_serializers'
+gem 'rack-cors'
 
 
 # QR code generation
 gem 'rqrcode'
+gem 'importmap-rails'
 
 # QR code scanning
 # gem 'qrscanner', '~> 0.4.1'
@@ -33,12 +35,25 @@ gem "tzinfo-data", platforms: %i[ mingw mswin x64_mingw jruby ]
 # gem "rack-cors"
 
 group :development, :test do
-  # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
+  # Original debug gem you have
   gem "debug", platforms: %i[ mri mingw x64_mingw ]
+  
+  # Additional recommended gems
+  gem 'rspec-rails'          # Testing framework
+  gem 'faker'                # Generates fake data for testing
+  gem 'pry'                  # Better debugging
+  gem 'pry-rails'           # Rails integration for pry
+  gem 'byebug'              # Alternative debugger
+  gem 'factory_bot_rails'   # Fixture replacement
 end
 
 group :development do
-  # Speed up commands on slow machines / big apps [https://github.com/rails/spring]
-  # gem "spring"
+  gem 'better_errors'       # Better error pages
+  gem 'binding_of_caller'   # Provides more REPL features
+  gem 'annotate'           # Adds schema info to model files
+  gem 'rails-erd'          # Generates entity relationship diagrams
 end
 
+
+gem 'stimulus-rails'
+gem 'turbo-rails'

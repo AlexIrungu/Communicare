@@ -1,5 +1,5 @@
 class CommunicableDisease < ApplicationRecord
-    has_many :areas, dependent: :destroy
+    has_many :areas
 
     validates :name, presence: true, uniqueness: true
     validates :image_url, presence: true

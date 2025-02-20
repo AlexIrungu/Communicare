@@ -105,7 +105,6 @@ function Signup() {
   function handleSubmit(e) {
     e.preventDefault();
 
-    // Check for lowercase field names in formData
     if (
       !formData.first_name ||
       !formData.last_name ||
@@ -116,9 +115,9 @@ function Signup() {
       return;
     }
 
-    console.log("Submitting:", formData); // Add this for debugging
+    console.log("Submitting:", formData);
 
-    fetch("http://127.0.0.1:3001/users", {
+    fetch("http://127.0.0.1:3001/api/v1/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -133,7 +132,7 @@ function Signup() {
         }
       })
       .then((data) => {
-        console.log("Signup successful:", data); // Log the API response here
+        console.log("Signup successful:", data);
         nav("/home");
         setMessage("Signup successful");
       })

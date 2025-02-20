@@ -4,14 +4,14 @@ import { useSelector } from "react-redux";
 import HomePage from "./pages/Home/HomePage";
 import DiseaseListPage from "./pages/DiseaseList/DiseaseListPage";
 import DiseaseDetailPage from "./pages/DiseaseDetail/DiseaseDetailPage";
-import AreasListPage from "./pages/AreaList/AreasListPage";
 import AreaDetailPage from "./pages/AreaDetail/AreaDetailPage";
 import MapViewPage from "./pages/MapView/MapViewPage";
 import DonatePage from "./pages/Donate/DonatePage";
 import AdminPage from "./pages/Admin/AdminPage";
 import Navbar from "./components/common/Navbar";
-import Login from './components/aunthentication/Login'
-import Signup from './components/aunthentication/Signup'
+import Login from './components/aunthentication/Login';
+import Signup from './components/aunthentication/Signup';
+import AreasListPage from "./pages/AreaList/AreasListPage";
 
 export default function App() {
   const user = useSelector((state) => state.auth.user); // Use Redux for authentication
@@ -32,15 +32,13 @@ export default function App() {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
-          
-          {/* Authentication Required Routes */}
-          <Route path="/disease-list" element={user ? <DiseaseListPage /> : <Navigate to="/login" />} />
-          <Route path="/disease/:diseaseId" element={user ? <DiseaseDetailPage /> : <Navigate to="/login" />} />
-          <Route path="/area-list" element={user ? <AreasListPage /> : <Navigate to="/login" />} />
-          <Route path="/area/:areaId" element={user ? <AreaDetailPage /> : <Navigate to="/login" />} />
-          <Route path="/map-view" element={user ? <MapViewPage /> : <Navigate to="/login" />} />
-          <Route path="/donate" element={user ? <DonatePage /> : <Navigate to="/login" />} />
-          
+          <Route path="/disease-list" element={<DiseaseListPage />} />
+          <Route path="/disease/:diseaseId" element={<DiseaseDetailPage />} />
+          <Route path="/area-list" element={<AreasListPage />} />
+          <Route path="/area/:areaId" element={<AreaDetailPage />} />
+          <Route path="/map-view" element={<MapViewPage />} />
+          <Route path="/donate" element={<DonatePage />} />
+
           {/* Admin Route */}
           <Route path="/admin/*" element={<ProtectedRoute><AdminPage /></ProtectedRoute>} />
           

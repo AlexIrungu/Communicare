@@ -1,0 +1,18 @@
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/debug_inspector-1.2.0/ext/debug_inspector
+/home/alex-irungu/.rvm/rubies/ruby-3.1.4/bin/ruby extconf.rb
+creating Makefile
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/debug_inspector-1.2.0/ext/debug_inspector
+make DESTDIR\= sitearchdir\=./.gem.20250220-40733-m5b18p sitelibdir\=./.gem.20250220-40733-m5b18p clean
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/debug_inspector-1.2.0/ext/debug_inspector
+make DESTDIR\= sitearchdir\=./.gem.20250220-40733-m5b18p sitelibdir\=./.gem.20250220-40733-m5b18p
+compiling debug_inspector.c
+linking shared-object debug_inspector.so
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/debug_inspector-1.2.0/ext/debug_inspector
+make DESTDIR\= sitearchdir\=./.gem.20250220-40733-m5b18p sitelibdir\=./.gem.20250220-40733-m5b18p install
+/usr/bin/install -c -m 0755 debug_inspector.so ./.gem.20250220-40733-m5b18p
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/debug_inspector-1.2.0/ext/debug_inspector
+make DESTDIR\= sitearchdir\=./.gem.20250220-40733-m5b18p sitelibdir\=./.gem.20250220-40733-m5b18p clean

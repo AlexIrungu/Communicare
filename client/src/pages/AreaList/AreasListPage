@@ -1,179 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import styled from 'styled-components';
-
-// Styled components
-const PageContainer = styled.div`
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-`;
-
-const Header = styled.div`
-  margin-bottom: 40px;
-  text-align: center;
-`;
-
-const Title = styled.h1`
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 15px;
-`;
-
-const Subtitle = styled.p`
-  font-size: 1.1rem;
-  color: #666;
-  max-width: 800px;
-  margin: 0 auto;
-`;
-
-const FiltersContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 30px;
-  flex-wrap: wrap;
-  gap: 15px;
-  
-  @media (max-width: 768px) {
-    flex-direction: column;
-  }
-`;
-
-const FilterSelect = styled.select`
-  padding: 10px 15px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  background-color: white;
-  min-width: 200px;
-`;
-
-const SearchInput = styled.input`
-  padding: 10px 15px;
-  border-radius: 6px;
-  border: 1px solid #ddd;
-  flex-grow: 1;
-  min-width: 250px;
-  
-  &:focus {
-    border-color: rgba(26, 143, 227, 0.5);
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(26, 143, 227, 0.2);
-  }
-`;
-
-const AreasList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 25px;
-`;
-
-const AreaCard = styled.div`
-  background-color: white;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
-  &:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  }
-`;
-
-const AreaHeader = styled.div`
-  background-color: ${props => {
-    const severity = parseInt(props.severity) || 0;
-    if (severity > 70) return 'rgba(220, 53, 69, 0.1)';
-    if (severity > 40) return 'rgba(255, 193, 7, 0.1)';
-    return 'rgba(40, 167, 69, 0.1)';
-  }};
-  padding: 15px 20px;
-  border-bottom: 1px solid #eee;
-`;
-
-const AreaName = styled.h2`
-  font-size: 1.3rem;
-  color: #333;
-`;
-
-const AreaRegion = styled.div`
-  font-size: 0.9rem;
-  color: #777;
-`;
-
-const AreaContent = styled.div`
-  padding: 20px;
-`;
-
-const AreaStats = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 15px;
-  margin-bottom: 20px;
-`;
-
-const StatItem = styled.div`
-  text-align: center;
-`;
-
-const StatValue = styled.div`
-  font-size: 1.4rem;
-  font-weight: bold;
-  color: ${props => props.color || 'rgba(26, 143, 227, 1)'};
-`;
-
-const StatLabel = styled.div`
-  font-size: 0.8rem;
-  color: #777;
-  margin-top: 5px;
-`;
-
-const AreaDiseasesContainer = styled.div`
-  margin-bottom: 20px;
-`;
-
-const DiseaseBadge = styled.span`
-  display: inline-block;
-  background-color: #f0f0f0;
-  color: #555;
-  font-size: 0.8rem;
-  padding: 3px 8px;
-  border-radius: 20px;
-  margin-right: 5px;
-  margin-bottom: 5px;
-`;
-
-const ViewButton = styled(Link)`
-  display: block;
-  background-color: rgba(26, 143, 227, 1);
-  color: white;
-  text-align: center;
-  padding: 10px;
-  border-radius: 6px;
-  text-decoration: none;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-  
-  &:hover {
-    background-color: rgba(22, 121, 193, 1);
-  }
-`;
-
-const NoResultsMessage = styled.div`
-  text-align: center;
-  padding: 40px;
-  background-color: #f9f9f9;
-  border-radius: 10px;
-  grid-column: 1 / -1;
-`;
-
-const LoadingContainer = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 400px;
-`;
 
 function AreasListPage() {
   const [areas, setAreas] = useState([]);
@@ -192,20 +19,15 @@ function AreasListPage() {
   useEffect(() => {
     const fetchAreas = async () => {
       try {
-        const response = await axios.get('http://localhost:3001/affected_areas');
+        const response = await axios.get('http://localhost:3001/api/v1/areas/high_risk');
         setAreas(response.data);
-        
-        // Extract unique regions for the filter
-        const uniqueRegions = [...new Set(response.data.map(area => area.region))].filter(Boolean);
-        setRegions(uniqueRegions);
-        
         setLoading(false);
       } catch (err) {
         setError('Failed to load affected areas. Please try again later.');
         setLoading(false);
       }
     };
-
+  
     fetchAreas();
   }, []);
 
@@ -213,7 +35,6 @@ function AreasListPage() {
   useEffect(() => {
     let result = [...areas];
     
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(area => 
@@ -222,12 +43,10 @@ function AreasListPage() {
       );
     }
     
-    // Apply region filter
     if (regionFilter) {
       result = result.filter(area => area.region === regionFilter);
     }
     
-    // Apply severity filter
     if (severityFilter) {
       switch (severityFilter) {
         case 'high':
@@ -251,26 +70,34 @@ function AreasListPage() {
 
   if (loading) {
     return (
-      <PageContainer>
-        <LoadingContainer>
-          <div>Loading affected areas...</div>
-        </LoadingContainer>
-      </PageContainer>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-center items-center h-96">
+          <div className="text-gray-500">Loading affected areas...</div>
+        </div>
+      </div>
     );
   }
 
+  const getSeverityColor = (severity) => {
+    const severityNum = parseInt(severity) || 0;
+    if (severityNum > 70) return 'bg-red-50';
+    if (severityNum > 40) return 'bg-yellow-50';
+    return 'bg-green-50';
+  };
+
   return (
-    <PageContainer>
-      <Header>
-        <Title>Affected Areas</Title>
-        <Subtitle>
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="text-center mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">Affected Areas</h1>
+        <p className="text-lg text-gray-600 max-w-3xl mx-auto">
           Explore regions affected by communicable diseases worldwide and learn how you can
           support prevention and treatment efforts in these communities.
-        </Subtitle>
-      </Header>
+        </p>
+      </div>
       
-      <FiltersContainer>
-        <FilterSelect 
+      <div className="flex flex-col md:flex-row gap-4 mb-8">
+        <select 
+          className="form-select rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           value={regionFilter}
           onChange={(e) => setRegionFilter(e.target.value)}
         >
@@ -278,9 +105,10 @@ function AreasListPage() {
           {regions.map(region => (
             <option key={region} value={region}>{region}</option>
           ))}
-        </FilterSelect>
+        </select>
         
-        <FilterSelect
+        <select
+          className="form-select rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           value={severityFilter}
           onChange={(e) => setSeverityFilter(e.target.value)}
         >
@@ -288,94 +116,94 @@ function AreasListPage() {
           <option value="high">High Severity</option>
           <option value="medium">Medium Severity</option>
           <option value="low">Low Severity</option>
-        </FilterSelect>
+        </select>
         
-        <SearchInput
+        <input
           type="text"
           placeholder="Search areas..."
+          className="flex-1 rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-      </FiltersContainer>
+      </div>
       
       {error && (
-        <div style={{ 
-          backgroundColor: '#fdecea',
-          borderLeft: '4px solid #e53935',
-          padding: '15px',
-          marginBottom: '30px',
-          color: '#d32f2f',
-          borderRadius: '4px'
-        }}>
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-8 text-red-700 rounded">
           {error}
         </div>
       )}
       
-      <AreasList>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredAreas.length === 0 ? (
-          <NoResultsMessage>
-            No affected areas match your search criteria. Try adjusting your filters.
-          </NoResultsMessage>
+          <div className="col-span-full text-center bg-gray-50 rounded-lg p-8">
+            <p className="text-gray-600">
+              No affected areas match your search criteria. Try adjusting your filters.
+            </p>
+          </div>
         ) : (
           filteredAreas.map(area => (
-            <AreaCard key={area.id}>
-              <AreaHeader severity={area.severity_index || 0}>
-                <AreaName>{area.name}</AreaName>
-                <AreaRegion>{area.region || 'Unknown region'}</AreaRegion>
-              </AreaHeader>
+            <div key={area.id} className="bg-white rounded-lg shadow-md overflow-hidden transition-transform hover:-translate-y-1 hover:shadow-lg">
+              <div className={`${getSeverityColor(area.severity_index)} px-6 py-4 border-b border-gray-200`}>
+                <h2 className="text-xl font-semibold text-gray-900">{area.name}</h2>
+                <div className="text-sm text-gray-600">{area.region || 'Unknown region'}</div>
+              </div>
               
-              <AreaContent>
-                <AreaStats>
-                  <StatItem>
-                    <StatValue color="#dc3545">
+              <div className="p-6">
+                <div className="grid grid-cols-2 gap-4 mb-6">
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-red-600">
                       {area.cases_count?.toLocaleString() || 0}
-                    </StatValue>
-                    <StatLabel>Reported Cases</StatLabel>
-                  </StatItem>
-                  <StatItem>
-                    <StatValue color="#ff9800">
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">Reported Cases</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-orange-500">
                       {area.mortality_rate || 0}%
-                    </StatValue>
-                    <StatLabel>Mortality Rate</StatLabel>
-                  </StatItem>
-                  <StatItem>
-                    <StatValue>
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">Mortality Rate</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-blue-600">
                       {area.population?.toLocaleString() || 'N/A'}
-                    </StatValue>
-                    <StatLabel>Population</StatLabel>
-                  </StatItem>
-                  <StatItem>
-                    <StatValue color="#4caf50">
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">Population</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-2xl font-bold text-green-600">
                       {area.recovery_rate || 0}%
-                    </StatValue>
-                    <StatLabel>Recovery Rate</StatLabel>
-                  </StatItem>
-                </AreaStats>
+                    </div>
+                    <div className="text-sm text-gray-600 mt-1">Recovery Rate</div>
+                  </div>
+                </div>
                 
                 {area.diseases && area.diseases.length > 0 && (
-                  <AreaDiseasesContainer>
-                    <div style={{ fontSize: '0.9rem', marginBottom: '5px', color: '#555' }}>
-                      Prevalent diseases:
-                    </div>
-                    <div>
+                  <div className="mb-6">
+                    <div className="text-sm text-gray-700 mb-2">Prevalent diseases:</div>
+                    <div className="flex flex-wrap gap-2">
                       {area.diseases.map(disease => (
-                        <DiseaseBadge key={disease.id}>
+                        <span 
+                          key={disease.id}
+                          className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                        >
                           {disease.name}
-                        </DiseaseBadge>
+                        </span>
                       ))}
                     </div>
-                  </AreaDiseasesContainer>
+                  </div>
                 )}
                 
-                <ViewButton to={`/areas/${area.id}`}>
+                <Link
+                  to={`/areas/${area.id}`}
+                  className="block w-full text-center bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
+                >
                   View Details
-                </ViewButton>
-              </AreaContent>
-            </AreaCard>
+                </Link>
+              </div>
+            </div>
           ))
         )}
-      </AreasList>
-    </PageContainer>
+      </div>
+    </div>
   );
 }
 
