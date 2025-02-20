@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchAllAreas } from '../../features/areas/areasSlice'; 
-import { submitDonation } from '../../features/donations/donationsSlice';
+import { createDonation } from '../../features/donations/donationsSlice';
 import DonationForm from '../../components/donations/DonationForm';
 import DonationSummary from '../../components/donations/DonationSummary';
 
@@ -24,7 +24,7 @@ const DonatePage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(submitDonation(donationData));
+    dispatch(createDonation(donationData));
   };
 
   const handleChange = (e) => {

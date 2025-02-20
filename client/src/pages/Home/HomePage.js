@@ -8,15 +8,24 @@ import { fetchRecentDonations } from '../../features/donations/donationsSlice';
 
 const HomePage = () => {
   const dispatch = useDispatch();
-  const { featuredDiseases } = useSelector(state => state.diseases);
-  const { highRiskAreas } = useSelector(state => state.areas);
-  const { recentDonations } = useSelector(state => state.donations);
+ 
+  const { featuredDiseases, loading: diseasesLoading } = useSelector(state => state.diseases || {});
+  const { highRiskAreas, loading: areasLoading } = useSelector(state => state.areas || {});
+  const { recentDonations, loading: donationsLoading } = useSelector(state => state.donations || {});
 
   useEffect(() => {
     dispatch(fetchFeaturedDiseases());
     dispatch(fetchHighRiskAreas());
     dispatch(fetchRecentDonations());
   }, [dispatch]);
+
+  if (diseasesLoading || areasLoading || donationsLoading) {
+    return (
+      <div className="loading-container">
+        <p>Loading...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="home-container">

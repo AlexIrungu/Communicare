@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
 import { fetchAreaById } from '../../features/areas/areasSlice';
-import { makeDonation } from '../../features/donations/donationsSlice';
+import { createDonation } from '../../features/donations/donationsSlice';
 import LoadingSpinner from '../common/LoadingSpinner';
 
 const DonationForm = () => {
@@ -69,7 +69,7 @@ const DonationForm = () => {
     e.preventDefault();
     
     if (validateForm()) {
-      dispatch(makeDonation({
+      dispatch(createDonation({
         area_id: areaId,
         ...formData,
         amount: parseFloat(formData.amount)
