@@ -16,10 +16,11 @@ export const areaService = {
 
   getAllAreas: async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/areas`);
-      return response.data;
+      const response = await axios.get('/api/areas');
+      console.log("API response for getAllAreas:", response.data); // Debugging log
+      return response;
     } catch (error) {
-      console.error('Error fetching areas:', error);
+      console.error("API error in getAllAreas:", error);
       throw error;
     }
   }

@@ -3,16 +3,18 @@ import { areaService } from '../../services/areaService';
 
 // Async thunks
 export const fetchAllAreas = createAsyncThunk(
-  'areas/fetchAllAreas',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await areaService.getAllAreas();
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response?.data || 'Failed to fetch areas');
+    'areas/fetchAllAreas',
+    async (_, { rejectWithValue }) => {
+      try {
+        const response = await areaService.getAllAreas();
+        console.log("Fetched areas:", response.data); // Debugging log
+        return response.data;
+      } catch (error) {
+        console.error("Error fetching areas:", error); // Debugging log
+        return rejectWithValue(error.response?.data || 'Failed to fetch areas');
+      }
     }
-  }
-);
+  );
 
 export const fetchHighRiskAreas = createAsyncThunk(
   'areas/fetchHighRiskAreas',

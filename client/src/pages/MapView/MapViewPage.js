@@ -18,16 +18,20 @@ const MapViewPage = () => {
     dispatch(fetchAllDiseases());
   }, [dispatch]);
 
-  const filteredAreas = areas.filter(area => {
+  console.log("Redux areas state:", areas); // Debugging log
+  console.log("Redux loading state:", areasLoading);
+//   console.log("Redux error state:", error);
+
+const filteredAreas = (areas ?? []).filter(area => { 
     if (selectedDisease !== 'all') {
-      const hasDisease = area.diseases.some(disease => disease.id === selectedDisease);
+      const hasDisease = area.diseases?.some(disease => disease.id === selectedDisease);
       if (!hasDisease) return false;
     }
-    
+  
     if (selectedRiskLevel !== 'all' && area.riskLevel !== selectedRiskLevel) {
       return false;
     }
-    
+  
     return true;
   });
 

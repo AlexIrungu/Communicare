@@ -1,15 +1,31 @@
-// pages/AreaDetail/AreaDetailPage.js
-import React, { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchAreaById } from '../../features/areas/areasSlice';
-import { fetchReviewsByArea } from '../../features/reviews/reviewsSlice';
+import React, { useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchAreaById } from "../../features/areas/areasSlice";
+import { fetchReviewsByArea } from "../../features/reviews/reviewsSlice";
+
+const StatCard = ({ title, value }) => (
+  <div className="bg-gray-100 p-4 rounded-lg shadow-md text-center">
+    <h3 className="text-lg font-semibold">{title}</h3>
+    <p className="text-xl font-bold">{value}</p>
+  </div>
+);
+
+const ReviewCard = ({ review }) => (
+  <div className="border p-4 rounded-lg shadow-sm my-2">
+    <h3 className="font-bold">{review.user.name}</h3>
+    <p>{review.content}</p>
+    <span className="text-gray-500 text-sm">
+      Posted on: {new Date(review.createdAt).toLocaleDateString()}
+    </span>
+  </div>
+);
 
 const AreaDetailPage = () => {
   const { areaId } = useParams();
   const dispatch = useDispatch();
-  const { currentArea, loading } = useSelector(state => state.areas);
-  const { reviews } = useSelector(state => state.reviews);
+  const { currentArea, loading, error } = useSelector((state) => state.areas);
+  const { reviews, loading: reviewsLoading, error: reviewsError } = useSelector((state) => state.reviews);
 
   useEffect(() => {
     if (areaId) {
@@ -18,54 +34,45 @@ const AreaDetailPage = () => {
     }
   }, [areaId, dispatch]);
 
-  if (loading) return <div>Loading area details...</div>;
-  if (!currentArea) return <div>Area not found</div>;
+  if (loading) return <div className="text-center">Loading area details...</div>;
+  if (error) return <div className="text-red-500">Error: {error}</div>;
+  if (!currentArea) return <div className="text-center">Area not found</div>;
 
   return (
-    <div className="area-detail-container">
-      <h1>{currentArea.name}</h1>
-      <div className="area-stats">
-        <div className="stat-card">
-          <h3>Population Affected</h3>
-          <p>{currentArea.populationAffected?.toLocaleString()}</p>
-        </div>
-        <div className="stat-card">
-          <h3>Risk Level</h3>
-          <p>{currentArea.riskLevel}</p>
-        </div>
-        <div className="stat-card">
-          <h3>Current Cases</h3>
-          <p>{currentArea.currentCases?.toLocaleString()}</p>
-        </div>
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-bold mb-4">{currentArea.name}</h1>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+        <StatCard title="Population Affected" value={currentArea.populationAffected?.toLocaleString()} />
+        <StatCard title="Risk Level" value={currentArea.riskLevel} />
+        <StatCard title="Current Cases" value={currentArea.currentCases?.toLocaleString()} />
       </div>
 
-      <div className="area-description">
-        <h2>About this Area</h2>
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">About this Area</h2>
         <p>{currentArea.description}</p>
       </div>
-      
-      <div className="prevalent-diseases">
-        <h2>Prevalent Diseases</h2>
-        <ul>
-          {currentArea.diseases?.map(disease => (
+
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Prevalent Diseases</h2>
+        <ul className="list-disc pl-5">
+          {currentArea.diseases?.map((disease) => (
             <li key={disease.id}>
-              <h3>{disease.name}</h3>
+              <h3 className="font-bold">{disease.name}</h3>
               <p>Severity: {disease.severity}</p>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className="community-reviews">
-        <h2>Community Reviews & Help Offers</h2>
-        {reviews.length > 0 ? (
-          reviews.map(review => (
-            <div key={review.id} className="review-card">
-              <h3>{review.user.name}</h3>
-              <p>{review.content}</p>
-              <span>Posted on: {new Date(review.createdAt).toLocaleDateString()}</span>
-            </div>
-          ))
+      <div className="mb-6">
+        <h2 className="text-xl font-semibold mb-2">Community Reviews & Help Offers</h2>
+        {reviewsLoading ? (
+          <p>Loading reviews...</p>
+        ) : reviewsError ? (
+          <p className="text-red-500">{reviewsError}</p>
+        ) : reviews.length > 0 ? (
+          reviews.map((review) => <ReviewCard key={review.id} review={review} />)
         ) : (
           <p>No reviews yet. Be the first to offer help!</p>
         )}
