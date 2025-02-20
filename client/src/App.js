@@ -1,50 +1,61 @@
 import React, { useState } from "react";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Home from "./components/Home";
+import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
 import Login from "./components/aunthentication/Login";
 import Signup from "./components/aunthentication/Signup";
-import Blog from "./components/Blog";
-import Navbar from "./components/Admin Dashboard/Navbar";
-import Donation from "./components/Donation";
-import About from "./components/About/About";
-import Contact from "./components/Contacts/ContactForm";
-import Map from "./components/Map";
-import LandingPage from "./components/Landing/LandingPage";
-import DiseasesList from "./components/Diseases/Diseases";
-import Areas from "./components/Areas/Area";
-import AreaDetails from "./components/Areas/AreaDetails";
-import Donate from "./components/Diseases/Donate";
-import Testimonial from "./components/Diseases/Testimonial";
-import MedicinePage from "./components/Diseases/MedicinePage";
-import AreaTable from "./components/Admin Dashboard/AreaTable";
-import Dashboard from "./components/Admin Dashboard/Admin";
+import HomePage from "./pages/Home/HomePage";
+import DiseaseListPage from "./pages/DiseaseList/DiseaseListPage";
+import DiseaseDetailPage from "./pages/DiseaseDetail/DiseaseDetailPage";
+import AreasListPage from "./pages/AreaList/AreasListPage";
+import AreaDetailPage from "./pages/AreaDetail/AreaDetailPage";
+import MapViewPage from "./pages/MapView/MapViewPage";
+import DonatePage from "./pages/Donate/DonatePage";
+import AdminPage from "./pages/Admin/AdminPage";
+import Navbar from "./components/common/Navbar"; 
 
 export default function App() {
   const [user, setUser] = useState(null);
+  
+  // Simple protected route logic
+  const ProtectedRoute = ({ children }) => {
+    if (!user || !user.isAdmin) {
+      return <Navigate to="/login" />;
+    }
+    return children;
+  };
+
   return (
-    <div className="App">
-      <BrowserRouter>
-        <Navbar setUser={setUser} user={user} />
+    <Router>
+      <div className="App">
+        {user && <Navbar user={user} setUser={setUser} />}
+        
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/home" element={<Home user={user} />} />
-          <Route path="/about" element={<About user={user} />} />
-          <Route path="/blog" element={<Blog user={user} />} />
-          <Route path="/donation" element={<Donation user={user} />} />
-          <Route path="/contacts" element={<Contact user={user} />} />
+          {/* Authentication Routes */}
           <Route path="/login" element={<Login setUser={setUser} />} />
-          <Route path="/map" element={<Map user={user} />} />
-          <Route path="/diseases" element={<DiseasesList user={user} />} />
-          <Route path="/areas" element={<Areas user={user} />} />
-          <Route path="/areadetails" element={<AreaDetails user={user} />} />
           <Route path="/signup" element={<Signup setUser={setUser} />} />
-          <Route path="/donated" element={<Donate user={user} />} />
-          <Route path="/testimonial" element={<Testimonial user={user} />} />
-          <Route path="/medicine" element={<MedicinePage user={user} />} />
-          <Route path="/area" element={<AreaTable user={user} />} />
-          <Route path="/admin" element={<Dashboard user={user} />} />
+          
+          {/* Main Application Routes */}
+          <Route path="/" element={user ? <HomePage /> : <Navigate to="/login" />} />
+          <Route path="/disease-list" element={user ? <DiseaseListPage /> : <Navigate to="/login" />} />
+          <Route path="/disease/:diseaseId" element={user ? <DiseaseDetailPage /> : <Navigate to="/login" />} />
+          <Route path="/area-list" element={user ? <AreasListPage /> : <Navigate to="/login" />} />
+          <Route path="/area/:areaId" element={user ? <AreaDetailPage /> : <Navigate to="/login" />} />
+          <Route path="/map-view" element={user ? <MapViewPage /> : <Navigate to="/login" />} />
+          <Route path="/donate" element={user ? <DonatePage /> : <Navigate to="/login" />} />
+          
+          {/* Admin Route */}
+          <Route 
+            path="/admin/*" 
+            element={
+              <ProtectedRoute>
+                <AdminPage />
+              </ProtectedRoute>
+            } 
+          />
+          
+          {/* Fallback route */}
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-      </BrowserRouter>
-    </div>
+      </div>
+    </Router>
   );
 }

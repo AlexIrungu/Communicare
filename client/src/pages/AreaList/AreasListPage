@@ -1,0 +1,382 @@
+import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import axios from 'axios';
+import styled from 'styled-components';
+
+// Styled components
+const PageContainer = styled.div`
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+`;
+
+const Header = styled.div`
+  margin-bottom: 40px;
+  text-align: center;
+`;
+
+const Title = styled.h1`
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 15px;
+`;
+
+const Subtitle = styled.p`
+  font-size: 1.1rem;
+  color: #666;
+  max-width: 800px;
+  margin: 0 auto;
+`;
+
+const FiltersContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+  gap: 15px;
+  
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+`;
+
+const FilterSelect = styled.select`
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  background-color: white;
+  min-width: 200px;
+`;
+
+const SearchInput = styled.input`
+  padding: 10px 15px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  flex-grow: 1;
+  min-width: 250px;
+  
+  &:focus {
+    border-color: rgba(26, 143, 227, 0.5);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(26, 143, 227, 0.2);
+  }
+`;
+
+const AreasList = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 25px;
+`;
+
+const AreaCard = styled.div`
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+`;
+
+const AreaHeader = styled.div`
+  background-color: ${props => {
+    const severity = parseInt(props.severity) || 0;
+    if (severity > 70) return 'rgba(220, 53, 69, 0.1)';
+    if (severity > 40) return 'rgba(255, 193, 7, 0.1)';
+    return 'rgba(40, 167, 69, 0.1)';
+  }};
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+`;
+
+const AreaName = styled.h2`
+  font-size: 1.3rem;
+  color: #333;
+`;
+
+const AreaRegion = styled.div`
+  font-size: 0.9rem;
+  color: #777;
+`;
+
+const AreaContent = styled.div`
+  padding: 20px;
+`;
+
+const AreaStats = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 20px;
+`;
+
+const StatItem = styled.div`
+  text-align: center;
+`;
+
+const StatValue = styled.div`
+  font-size: 1.4rem;
+  font-weight: bold;
+  color: ${props => props.color || 'rgba(26, 143, 227, 1)'};
+`;
+
+const StatLabel = styled.div`
+  font-size: 0.8rem;
+  color: #777;
+  margin-top: 5px;
+`;
+
+const AreaDiseasesContainer = styled.div`
+  margin-bottom: 20px;
+`;
+
+const DiseaseBadge = styled.span`
+  display: inline-block;
+  background-color: #f0f0f0;
+  color: #555;
+  font-size: 0.8rem;
+  padding: 3px 8px;
+  border-radius: 20px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+`;
+
+const ViewButton = styled(Link)`
+  display: block;
+  background-color: rgba(26, 143, 227, 1);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border-radius: 6px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  
+  &:hover {
+    background-color: rgba(22, 121, 193, 1);
+  }
+`;
+
+const NoResultsMessage = styled.div`
+  text-align: center;
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  grid-column: 1 / -1;
+`;
+
+const LoadingContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 400px;
+`;
+
+function AreasListPage() {
+  const [areas, setAreas] = useState([]);
+  const [filteredAreas, setFilteredAreas] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
+  // Filter states
+  const [searchQuery, setSearchQuery] = useState('');
+  const [regionFilter, setRegionFilter] = useState('');
+  const [severityFilter, setSeverityFilter] = useState('');
+  
+  // Available filter options
+  const [regions, setRegions] = useState([]);
+
+  useEffect(() => {
+    const fetchAreas = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/affected_areas');
+        setAreas(response.data);
+        
+        // Extract unique regions for the filter
+        const uniqueRegions = [...new Set(response.data.map(area => area.region))].filter(Boolean);
+        setRegions(uniqueRegions);
+        
+        setLoading(false);
+      } catch (err) {
+        setError('Failed to load affected areas. Please try again later.');
+        setLoading(false);
+      }
+    };
+
+    fetchAreas();
+  }, []);
+
+  // Apply filters whenever filter states change
+  useEffect(() => {
+    let result = [...areas];
+    
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(area => 
+        area.name.toLowerCase().includes(query) || 
+        area.region?.toLowerCase().includes(query)
+      );
+    }
+    
+    // Apply region filter
+    if (regionFilter) {
+      result = result.filter(area => area.region === regionFilter);
+    }
+    
+    // Apply severity filter
+    if (severityFilter) {
+      switch (severityFilter) {
+        case 'high':
+          result = result.filter(area => parseInt(area.severity_index) > 70);
+          break;
+        case 'medium':
+          result = result.filter(area => 
+            parseInt(area.severity_index) >= 40 && parseInt(area.severity_index) <= 70
+          );
+          break;
+        case 'low':
+          result = result.filter(area => parseInt(area.severity_index) < 40);
+          break;
+        default:
+          break;
+      }
+    }
+    
+    setFilteredAreas(result);
+  }, [areas, searchQuery, regionFilter, severityFilter]);
+
+  if (loading) {
+    return (
+      <PageContainer>
+        <LoadingContainer>
+          <div>Loading affected areas...</div>
+        </LoadingContainer>
+      </PageContainer>
+    );
+  }
+
+  return (
+    <PageContainer>
+      <Header>
+        <Title>Affected Areas</Title>
+        <Subtitle>
+          Explore regions affected by communicable diseases worldwide and learn how you can
+          support prevention and treatment efforts in these communities.
+        </Subtitle>
+      </Header>
+      
+      <FiltersContainer>
+        <FilterSelect 
+          value={regionFilter}
+          onChange={(e) => setRegionFilter(e.target.value)}
+        >
+          <option value="">All Regions</option>
+          {regions.map(region => (
+            <option key={region} value={region}>{region}</option>
+          ))}
+        </FilterSelect>
+        
+        <FilterSelect
+          value={severityFilter}
+          onChange={(e) => setSeverityFilter(e.target.value)}
+        >
+          <option value="">All Severity Levels</option>
+          <option value="high">High Severity</option>
+          <option value="medium">Medium Severity</option>
+          <option value="low">Low Severity</option>
+        </FilterSelect>
+        
+        <SearchInput
+          type="text"
+          placeholder="Search areas..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+      </FiltersContainer>
+      
+      {error && (
+        <div style={{ 
+          backgroundColor: '#fdecea',
+          borderLeft: '4px solid #e53935',
+          padding: '15px',
+          marginBottom: '30px',
+          color: '#d32f2f',
+          borderRadius: '4px'
+        }}>
+          {error}
+        </div>
+      )}
+      
+      <AreasList>
+        {filteredAreas.length === 0 ? (
+          <NoResultsMessage>
+            No affected areas match your search criteria. Try adjusting your filters.
+          </NoResultsMessage>
+        ) : (
+          filteredAreas.map(area => (
+            <AreaCard key={area.id}>
+              <AreaHeader severity={area.severity_index || 0}>
+                <AreaName>{area.name}</AreaName>
+                <AreaRegion>{area.region || 'Unknown region'}</AreaRegion>
+              </AreaHeader>
+              
+              <AreaContent>
+                <AreaStats>
+                  <StatItem>
+                    <StatValue color="#dc3545">
+                      {area.cases_count?.toLocaleString() || 0}
+                    </StatValue>
+                    <StatLabel>Reported Cases</StatLabel>
+                  </StatItem>
+                  <StatItem>
+                    <StatValue color="#ff9800">
+                      {area.mortality_rate || 0}%
+                    </StatValue>
+                    <StatLabel>Mortality Rate</StatLabel>
+                  </StatItem>
+                  <StatItem>
+                    <StatValue>
+                      {area.population?.toLocaleString() || 'N/A'}
+                    </StatValue>
+                    <StatLabel>Population</StatLabel>
+                  </StatItem>
+                  <StatItem>
+                    <StatValue color="#4caf50">
+                      {area.recovery_rate || 0}%
+                    </StatValue>
+                    <StatLabel>Recovery Rate</StatLabel>
+                  </StatItem>
+                </AreaStats>
+                
+                {area.diseases && area.diseases.length > 0 && (
+                  <AreaDiseasesContainer>
+                    <div style={{ fontSize: '0.9rem', marginBottom: '5px', color: '#555' }}>
+                      Prevalent diseases:
+                    </div>
+                    <div>
+                      {area.diseases.map(disease => (
+                        <DiseaseBadge key={disease.id}>
+                          {disease.name}
+                        </DiseaseBadge>
+                      ))}
+                    </div>
+                  </AreaDiseasesContainer>
+                )}
+                
+                <ViewButton to={`/areas/${area.id}`}>
+                  View Details
+                </ViewButton>
+              </AreaContent>
+            </AreaCard>
+          ))
+        )}
+      </AreasList>
+    </PageContainer>
+  );
+}
+
+export default AreasListPage;
