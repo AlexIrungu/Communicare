@@ -26,6 +26,8 @@ const MapViewPage = () => {
 //   console.log("Redux error state:", error);
 
 const filteredAreas = (areas ?? []).filter(area => { 
+  
+
     if (selectedDisease !== 'all') {
       const hasDisease = area.diseases?.some(disease => disease.id === selectedDisease);
       if (!hasDisease) return false;
@@ -36,6 +38,7 @@ const filteredAreas = (areas ?? []).filter(area => {
     }
   
     return true;
+    console.log("Filtered Areas:", filteredAreas);
   });
 
   if (areasLoading || diseasesLoading) {

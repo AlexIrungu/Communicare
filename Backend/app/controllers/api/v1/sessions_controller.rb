@@ -1,10 +1,11 @@
-# app/controllers/api/v1/sessions_controller.rb
 module Api
   module V1
     class SessionsController < ApplicationController
+      skip_before_action :authorize, only: [:create]
+
       def create
         user = User.find_by(email: params[:email])
-        if user&.authenticate(params[:password])
+        if user && user.authenticate(params[:password]) # Use `authenticate` instead of `valid_password?`
           token = encode_token(user_id: user.id)
           render json: { user: user, token: token }, status: :ok
         else

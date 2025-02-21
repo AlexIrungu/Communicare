@@ -42,6 +42,10 @@ const MapVisualization = ({ areas = [], selectedDisease }) => {
   const validAreas = areas.filter(area => 
     isValidCoordinates(Number(area.latitude), Number(area.longitude))
   );
+  console.log("Areas passed to MapVisualization:", areas);
+  console.log("Map markers data:", areas.map(area => ({ name: area.name, lat: area.lat, lng: area.lng })));
+
+
 
   return (
     <div className="w-full h-[500px] rounded-lg shadow-lg overflow-hidden">
