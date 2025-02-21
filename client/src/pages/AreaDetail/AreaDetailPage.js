@@ -2,7 +2,8 @@ import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchAreaById } from "../../features/areas/areasSlice";
-import { fetchReviewsByArea } from "../../features/reviews/reviewsSlice";
+import { fetchReviews } from "../../features/reviews/reviewsSlice";
+
 
 const StatCard = ({ title, value }) => (
   <div className="bg-gray-100 p-4 rounded-lg shadow-md text-center">
@@ -30,9 +31,10 @@ const AreaDetailPage = () => {
   useEffect(() => {
     if (areaId) {
       dispatch(fetchAreaById(areaId));
-      dispatch(fetchReviewsByArea(areaId));
+      dispatch(fetchReviews()); // Fetch all reviews
     }
   }, [areaId, dispatch]);
+  
 
   if (loading) return <div className="text-center">Loading area details...</div>;
   if (error) return <div className="text-red-500">Error: {error}</div>;

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_21_201408) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -52,6 +52,10 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "population"
+    t.string "risk_level"
+    t.date "last_outbreak"
+    t.integer "healthcare_facilities"
+    t.text "notes"
     t.index ["communicable_disease_id"], name: "index_areas_on_communicable_disease_id"
   end
 
@@ -65,6 +69,11 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean "featured"
+    t.text "treatment"
+    t.text "risk_factors"
+    t.text "transmission"
+    t.text "endemic_regions"
+    t.string "annual_cases"
   end
 
   create_table "diseases", force: :cascade do |t|
@@ -92,6 +101,25 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
     t.index ["user_id"], name: "index_donations_on_user_id"
   end
 
+  create_table "educational_resources", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "title"
+    t.boolean "communicable_disease"
+    t.string "resource_type"
+    t.string "url"
+    t.text "description"
+    t.string "language"
+    t.string "audience"
+    t.datetime "publication_date"
+  end
+
+  create_table "jwt_denylist", force: :cascade do |t|
+    t.string "jti", null: false
+    t.datetime "exp", null: false
+    t.index ["jti"], name: "index_jwt_denylist_on_jti"
+  end
+
   create_table "notifications", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "message"
@@ -101,6 +129,23 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
     t.index ["user_id"], name: "index_notifications_on_user_id"
   end
 
+  create_table "outbreak_histories", force: :cascade do |t|
+    t.bigint "communicable_disease_id", null: false
+    t.bigint "area_id", null: false
+    t.integer "case_count"
+    t.date "outbreak_date"
+    t.string "severity_level"
+    t.string "status"
+    t.text "description"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "fatalities"
+    t.boolean "resolved"
+    t.text "notes"
+    t.index ["area_id"], name: "index_outbreak_histories_on_area_id"
+    t.index ["communicable_disease_id"], name: "index_outbreak_histories_on_communicable_disease_id"
+  end
+
   create_table "payments", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.decimal "amount"
@@ -108,6 +153,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_payments_on_user_id"
+  end
+
+  create_table "prevention_tips", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "communicable_disease_id"
+    t.integer "tip_number"
+    t.text "description"
+    t.index ["communicable_disease_id"], name: "index_prevention_tips_on_communicable_disease_id"
   end
 
   create_table "reviews", force: :cascade do |t|
@@ -132,6 +186,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
     t.datetime "updated_at", null: false
     t.string "first_name"
     t.string "last_name"
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.string "specialty"
+    t.index ["email"], name: "index_users_on_email", unique: true
+    t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
@@ -140,7 +201,10 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_20_160311) do
   add_foreign_key "donations", "areas"
   add_foreign_key "donations", "users"
   add_foreign_key "notifications", "users"
+  add_foreign_key "outbreak_histories", "areas"
+  add_foreign_key "outbreak_histories", "communicable_diseases"
   add_foreign_key "payments", "users"
+  add_foreign_key "prevention_tips", "communicable_diseases"
   add_foreign_key "reviews", "areas"
   add_foreign_key "reviews", "diseases"
   add_foreign_key "reviews", "users"

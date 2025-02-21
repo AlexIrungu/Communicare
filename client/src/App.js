@@ -11,7 +11,7 @@ import AdminPage from "./pages/Admin/AdminPage";
 import Navbar from "./components/common/Navbar";
 import Login from './components/aunthentication/Login';
 import Signup from './components/aunthentication/Signup';
-import AreasListPage from "./pages/AreaList/AreasListPage";
+import AreasListPage from './pages/AreaList/AreasListPage';
 
 export default function App() {
   const user = useSelector((state) => state.auth.user); // Use Redux for authentication
@@ -34,7 +34,7 @@ export default function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/disease-list" element={<DiseaseListPage />} />
           <Route path="/disease/:diseaseId" element={<DiseaseDetailPage />} />
-          <Route path="/area-list" element={<AreasListPage />} />
+          <Route path="/areas" element={<AreasListPage />} />
           <Route path="/area/:areaId" element={<AreaDetailPage />} />
           <Route path="/map-view" element={<MapViewPage />} />
           <Route path="/donate" element={<DonatePage />} />

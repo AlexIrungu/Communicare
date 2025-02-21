@@ -57,3 +57,8 @@ end
 
 gem 'stimulus-rails'
 gem 'turbo-rails'
+gem 'open-uri'
+gem 'kaminari'
+gem 'devise'
+gem 'devise-jwt'
+gem 'rack-attack'

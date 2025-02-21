@@ -17,9 +17,12 @@ const MapViewPage = () => {
     dispatch(fetchAllAreas());
     dispatch(fetchAllDiseases());
   }, [dispatch]);
-
-  console.log("Redux areas state:", areas); // Debugging log
-  console.log("Redux loading state:", areasLoading);
+  
+  // Debugging logs inside useEffect
+  useEffect(() => {
+    console.log("Updated Redux areas state:", areas); // ✅ Log areas after state update
+    console.log("Redux loading state:", areasLoading);
+  }, [areas, areasLoading]);
 //   console.log("Redux error state:", error);
 
 const filteredAreas = (areas ?? []).filter(area => { 

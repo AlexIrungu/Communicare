@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  fetchDonations,
-  updateDonation,
-  deleteDonation 
-} from '../../features/admin/adminSlice';
+import { loadDonations, modifyDonation, removeDonation } from '../../features/admin/adminSlice';
+
 import Modal from '../common/Modal';
 import Pagination from '../common/Pagination';
 
@@ -21,7 +18,7 @@ const AdminDonationPanel = () => {
   const donationsPerPage = 10;
 
   useEffect(() => {
-    dispatch(fetchDonations());
+    dispatch(loadDonations());
   }, [dispatch]);
 
   const handleInputChange = (e) => {
@@ -31,7 +28,7 @@ const AdminDonationPanel = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateDonation({ 
+    dispatch(modifyDonation({ 
       id: currentDonation.id, 
       ...formData 
     }))
@@ -52,7 +49,7 @@ const AdminDonationPanel = () => {
 
   const handleDeleteDonation = (donationId) => {
     if (window.confirm('Are you sure you want to delete this donation record?')) {
-      dispatch(deleteDonation(donationId));
+      dispatch(removeDonation(donationId));
     }
   };
 

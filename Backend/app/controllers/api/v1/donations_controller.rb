@@ -4,17 +4,13 @@ module Api
       skip_before_action :authorize, only: [:recent]
 
       def index
-        donations = if params[:area_id]
-                      Area.find(params[:area_id]).donations
-                    else
-                      Donation.all
-                    end
-        render json: donations
+        @diseases = CommunicableDisease.page(params[:page]).per(10)
+        render json: @diseases, meta: pagination_meta(@diseases)
       end
 
       def recent
-        @donations = Donation.recent
-        render json: @donations
+        @recent_donations = Donation.order(created_at: :desc).limit(5)
+        render json: @recent_donations
       end
 
       def create
@@ -28,6 +24,16 @@ module Api
       end
 
       private
+
+      def pagination_meta(object)
+        {
+          current_page: object.current_page,
+          next_page: object.next_page,
+          prev_page: object.prev_page,
+          total_pages: object.total_pages,
+          total_count: object.total_count
+        }
+      end
 
       def donation_params
         params.permit(:amount, :area_id, :status)

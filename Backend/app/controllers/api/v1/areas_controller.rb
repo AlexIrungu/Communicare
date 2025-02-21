@@ -4,10 +4,23 @@ module Api
       skip_before_action :authorize, only: [:index, :show, :high_risk]
       before_action :admin_only, only: [:create, :update, :destroy]
 
-      def index
-        areas = Area.all
-        render json: areas
-      end
+     # Then in controllers
+def index
+  @diseases = CommunicableDisease.page(params[:page]).per(10)
+  render json: @diseases, meta: pagination_meta(@diseases)
+end
+
+private
+
+def pagination_meta(object)
+  {
+    current_page: object.current_page,
+    next_page: object.next_page,
+    prev_page: object.prev_page,
+    total_pages: object.total_pages,
+    total_count: object.total_count
+  }
+end
 
       def show
         area = find_area

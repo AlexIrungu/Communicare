@@ -2,23 +2,21 @@
 module Api
   module V1
     class SessionsController < ApplicationController
-      skip_before_action :authorize, only: [:create]
-    
       def create
         user = User.find_by(email: params[:email])
-    
         if user&.authenticate(params[:password])
-          session[:user_id] = user.id
-          render json: { message: 'Login successful', user: user }, status: :ok
+          token = encode_token(user_id: user.id)
+          render json: { user: user, token: token }, status: :ok
         else
-          render json: { message: 'Invalid email or password' }, status: :unauthorized
+          render json: { error: "Invalid email or password" }, status: :unauthorized
         end
       end
-    
-      def destroy
-        session[:user_id] = nil
-        render json: { message: 'Logged out' }, status: :ok
+
+      private
+
+      def encode_token(payload)
+        JWT.encode(payload, Rails.application.credentials.secret_key_base)
       end
     end
-end
+  end
 end

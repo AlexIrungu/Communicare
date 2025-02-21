@@ -1,12 +1,8 @@
 // components/admin/AdminDiseasePanel.js
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { 
-  fetchDiseases, 
-  createDisease, 
-  updateDisease, 
-  deleteDisease 
-} from '../../features/admin/adminSlice';
+import { loadDiseases, addDisease, modifyDisease, removeDisease } from '../../features/admin/adminSlice';
+
 import Modal from '../common/Modal';
 import Pagination from '../common/Pagination';
 
@@ -27,7 +23,7 @@ const AdminDiseasePanel = () => {
   const diseasesPerPage = 10;
 
   useEffect(() => {
-    dispatch(fetchDiseases());
+    dispatch(loadDiseases());
   }, [dispatch]);
 
   const handleInputChange = (e) => {
@@ -37,7 +33,7 @@ const AdminDiseasePanel = () => {
 
   const handleCreateSubmit = (e) => {
     e.preventDefault();
-    dispatch(createDisease(formData))
+    dispatch(addDisease(formData))
       .unwrap()
       .then(() => {
         setShowCreateModal(false);
@@ -47,7 +43,7 @@ const AdminDiseasePanel = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateDisease({ 
+    dispatch(modifyDisease({ 
       id: currentDisease.id, 
       ...formData 
     }))
@@ -65,7 +61,7 @@ const AdminDiseasePanel = () => {
 
   const handleDeleteDisease = (diseaseId) => {
     if (window.confirm('Are you sure you want to delete this disease?')) {
-      dispatch(deleteDisease(diseaseId));
+      dispatch(removeDisease(diseaseId));
     }
   };
 

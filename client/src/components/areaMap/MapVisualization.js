@@ -3,7 +3,6 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-// Custom marker icons based on risk level
 const getMarkerIcon = (riskLevel) => {
   const colors = {
     high: 'red',
@@ -18,31 +17,69 @@ const getMarkerIcon = (riskLevel) => {
   });
 };
 
-const MapVisualization = ({ areas, selectedDisease }) => {
+// Helper function to validate coordinates
+const isValidCoordinates = (lat, lng) => {
+  return typeof lat === 'number' && 
+         typeof lng === 'number' && 
+         !isNaN(lat) && 
+         !isNaN(lng) && 
+         lat >= -90 && 
+         lat <= 90 && 
+         lng >= -180 && 
+         lng <= 180;
+};
+
+const MapVisualization = ({ areas = [], selectedDisease }) => {
+  if (!Array.isArray(areas)) {
+    return (
+      <div className="w-full h-[500px] rounded-lg shadow-lg overflow-hidden flex items-center justify-center bg-gray-100">
+        <p className="text-gray-600">Loading map data...</p>
+      </div>
+    );
+  }
+
+  // Filter out areas with invalid coordinates
+  const validAreas = areas.filter(area => 
+    isValidCoordinates(Number(area.latitude), Number(area.longitude))
+  );
+
   return (
     <div className="w-full h-[500px] rounded-lg shadow-lg overflow-hidden">
-      <MapContainer center={[0, 0]} zoom={2} className="w-full h-full">
+      <MapContainer 
+        center={[0, 0]} 
+        zoom={2} 
+        className="w-full h-full"
+        scrollWheelZoom={true}
+      >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         />
-        {areas.map((area) => (
-          <Marker 
-            key={area.id} 
-            position={[area.latitude, area.longitude]} 
-            icon={getMarkerIcon(area.riskLevel)}
-          >
-            <Popup>
-              <div className="p-2">
-                <h3 className="text-lg font-bold">{area.name}</h3>
-                <p className="text-sm text-gray-600">Risk Level: {area.riskLevel}</p>
-                <p className="text-sm text-gray-600">
-                  Diseases: {area.diseases.map((d) => d.name).join(', ')}
-                </p>
-              </div>
-            </Popup>
-          </Marker>
-        ))}
+        {validAreas.map((area) => {
+          const lat = Number(area.latitude);
+          const lng = Number(area.longitude);
+          
+          return (
+            <Marker 
+              key={area.id || `${lat}-${lng}`}
+              position={[lat, lng]}
+              icon={getMarkerIcon(area.riskLevel)}
+            >
+              <Popup>
+                <div className="p-2">
+                  <h3 className="text-lg font-bold">{area.name}</h3>
+                  <p className="text-sm text-gray-600">Risk Level: {area.riskLevel}</p>
+                  <p className="text-sm text-gray-600">
+                    Diseases: {Array.isArray(area.diseases) ? area.diseases.map(d => d.name).join(', ') : 'None reported'}
+                  </p>
+                  <p className="text-sm text-gray-600">
+                    Location: {lat.toFixed(4)}, {lng.toFixed(4)}
+                  </p>
+                </div>
+              </Popup>
+            </Marker>
+          );
+        })}
       </MapContainer>
     </div>
   );

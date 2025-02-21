@@ -1,7 +1,7 @@
 // pages/Admin/AdminPage.js
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchAdminStats } from '../../features/admin/adminSlice';
+import { loadAdminStats } from '../../features/admin/adminSlice';
 import AdminDiseasePanel from '../../components/admin/AdminDiseasePanel';
 import AdminAreaPanel from '../../components/admin/AdminAreaPanel';
 import AdminUserPanel from '../../components/admin/AdminUserPanel';
@@ -13,7 +13,7 @@ const AdminPage = () => {
   const [activeTab, setActiveTab] = useState('dashboard');
 
   useEffect(() => {
-    dispatch(fetchAdminStats());
+    dispatch(loadAdminStats());
   }, [dispatch]);
 
   const renderActiveTab = () => {

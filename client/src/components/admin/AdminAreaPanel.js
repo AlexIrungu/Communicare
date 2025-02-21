@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
-  fetchAreas, 
-  createArea, 
-  updateArea, 
-  deleteArea 
-} from '../../features/admin/adminSlice';
+    loadAreas, 
+    addArea, 
+    modifyArea, 
+    removeArea 
+  } from '../../features/admin/adminSlice';
+  
 import Modal from '../common/Modal';
 import Pagination from '../common/Pagination';
 
@@ -26,7 +27,7 @@ const AdminAreaPanel = () => {
   const areasPerPage = 10;
 
   useEffect(() => {
-    dispatch(fetchAreas());
+    dispatch(loadAreas());
   }, [dispatch]);
 
   const handleInputChange = (e) => {
@@ -36,7 +37,7 @@ const AdminAreaPanel = () => {
 
   const handleCreateSubmit = (e) => {
     e.preventDefault();
-    dispatch(createArea(formData))
+    dispatch(addArea(formData))
       .unwrap()
       .then(() => {
         setShowCreateModal(false);
@@ -52,7 +53,7 @@ const AdminAreaPanel = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateArea({ 
+    dispatch(modifyArea({ 
       id: currentArea.id, 
       ...formData 
     }))
@@ -70,7 +71,7 @@ const AdminAreaPanel = () => {
 
   const handleDeleteArea = (areaId) => {
     if (window.confirm('Are you sure you want to delete this affected area?')) {
-      dispatch(deleteArea(areaId));
+      dispatch(removeArea(areaId));
     }
   };
 

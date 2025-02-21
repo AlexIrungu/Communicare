@@ -15,10 +15,23 @@ class Api::V1::UsersController < ApplicationController
     render json: @current_user
   end
   
-  def index
-    users = User.all
-    render json: users
-  end
+ # Then in controllers
+def index
+  @diseases = CommunicableDisease.page(params[:page]).per(10)
+  render json: @diseases, meta: pagination_meta(@diseases)
+end
+
+private
+
+def pagination_meta(object)
+  {
+    current_page: object.current_page,
+    next_page: object.next_page,
+    prev_page: object.prev_page,
+    total_pages: object.total_pages,
+    total_count: object.total_count
+  }
+end
   
   def update_role
     user = User.find(params[:id])
