@@ -50,8 +50,8 @@ Ensure you have the following installed:
 ### Backend Setup
 1. Clone the repository:
    ```sh
-   git clone https://github.com/AlexIrungu/Communicare.git
-   cd Communicare/Backend
+   git clone https://github.com/yourusername/communicare.git
+   cd communicare/Backend
    ```
 2. Install dependencies:
    ```sh
@@ -130,7 +130,7 @@ This project is open-source and available under the [MIT License](LICENSE).
 For any inquiries, reach out to:
 - **Alex Irungu** (Project Owner)
 - Email: alex@example.com
-- GitHub: [AlexIrungu](https://github.com/AlexIrungu)
+- GitHub: [your-github-profile](https://github.com/yourusername)
 
 ---
 🚀 **Let's make an impact together by using technology to fight communicable diseases!**
