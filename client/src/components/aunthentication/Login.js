@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { keyframes } from "styled-components";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
+import { useDispatch, useSelector } from 'react-redux';
+import { login, clearError } from '../../features/auth/authSlice';
 
 const slideIn = keyframes`
   from {
@@ -67,6 +68,10 @@ const Button = styled.button`
   color: #fff;
   font-size: 16px;
   cursor: pointer;
+  &:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
 `;
 
 const Message = styled.p`
@@ -85,14 +90,43 @@ const CustomLink = styled(Link)`
   color: rgba(26, 143, 227, 1);
 `;
 
+const Select = styled.select`
+  margin-bottom: 20px;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background-color: #f2f2f2;
+  font-size: 16px;
+`;
+
+const Label = styled.label`
+  margin-bottom: 8px;
+  color: #333;
+`;
+
 function Login() {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     role: "user",
   });
-  const [message, setMessage] = useState("");
-  const nav = useNavigate();
+  
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    dispatch(clearError());
+    return () => dispatch(clearError());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const redirectPath = localStorage.getItem('redirectAfterLogin') || '/';
+      localStorage.removeItem('redirectAfterLogin');
+      navigate(redirectPath);
+    }
+  }, [isAuthenticated, navigate]);
 
   function handleChange(e) {
     setFormData({
@@ -104,28 +138,14 @@ function Login() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!formData.email || !formData.password) {
-      setMessage("Please enter your email and password");
       return;
     }
 
-    try {
-      const response = await axios.post("http://localhost:3001/api/v1/login", {
-        email: formData.email,
-        password: formData.password,
-        role: formData.role,
-      });
-
-      if (response.status === 200) {
-        if (formData.role === "admin") {
-          nav("/nav");
-        } else {
-          nav("/home");
-          setMessage("Login successful");
-        }
-      }
-    } catch (error) {
-      setMessage(error.response?.data.message || "Login failed");
-    }
+    dispatch(login({
+      email: formData.email,
+      password: formData.password,
+      role: formData.role,
+    }));
   }
 
   return (
@@ -138,6 +158,7 @@ function Login() {
           placeholder="Email"
           value={formData.email}
           onChange={handleChange}
+          disabled={loading}
         />
         <Input
           type="password"
@@ -145,20 +166,24 @@ function Login() {
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
+          disabled={loading}
         />
-        <label htmlFor="role">Login as:</label>
-        <select
+        <Label htmlFor="role">Login as:</Label>
+        <Select
           name="role"
           id="role"
           value={formData.role}
           onChange={handleChange}
+          disabled={loading}
         >
           <option value="user">User</option>
           <option value="admin">Admin</option>
-        </select>
-        <Button type="submit">Login</Button>
+        </Select>
+        <Button type="submit" disabled={loading}>
+          {loading ? "Logging in..." : "Login"}
+        </Button>
       </Form>
-      <Message isError={message.includes("Error")}>{message}</Message>
+      {error && <Message isError>{error}</Message>}
       <LinkWrapper>
         <CustomLink to="/signup">Don't have an account? Signup here</CustomLink>
       </LinkWrapper>

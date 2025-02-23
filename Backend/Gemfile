@@ -62,3 +62,5 @@ gem 'kaminari'
 gem 'devise'
 gem 'devise-jwt'
 gem 'rack-attack'
+# Add to your main gem list (not in any group)
+gem 'dotenv-rails'

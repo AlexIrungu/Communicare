@@ -1,11 +1,10 @@
-// components/admin/UserManagement.js
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
-  fetchUsers, 
-  createUser, 
-  updateUserRole, 
-  deleteUser 
+  loadUsers, 
+  addUser, 
+  modifyUser, 
+  removeUser 
 } from '../../features/admin/adminSlice';
 import Modal from '../common/Modal';
 import Pagination from '../common/Pagination';
@@ -26,7 +25,7 @@ const UserManagement = () => {
   const usersPerPage = 10;
 
   useEffect(() => {
-    dispatch(fetchUsers());
+    dispatch(loadUsers());
   }, [dispatch]);
 
   const handleInputChange = (e) => {
@@ -36,7 +35,7 @@ const UserManagement = () => {
 
   const handleCreateSubmit = (e) => {
     e.preventDefault();
-    dispatch(createUser(formData))
+    dispatch(addUser(formData))
       .unwrap()
       .then(() => {
         setShowCreateModal(false);
@@ -46,9 +45,9 @@ const UserManagement = () => {
 
   const handleEditSubmit = (e) => {
     e.preventDefault();
-    dispatch(updateUserRole({ 
+    dispatch(modifyUser({ 
       id: currentUser.id, 
-      role: formData.role 
+      changes: { role: formData.role }
     }))
       .unwrap()
       .then(() => {
@@ -64,7 +63,7 @@ const UserManagement = () => {
 
   const handleDeleteUser = (userId) => {
     if (window.confirm('Are you sure you want to delete this user?')) {
-      dispatch(deleteUser(userId));
+      dispatch(removeUser(userId));
     }
   };
 

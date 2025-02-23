@@ -26,6 +26,10 @@ Rails.application.routes.draw do
       post "/login", to: "sessions#create"
       delete "/logout", to: "sessions#destroy"
       get "/me", to: "users#show"
+        # Add these new routes
+    get '/statistics', to: 'statistics#index'
+    get '/health-alerts', to: 'health_alerts#index'
+    get '/community-reviews', to: 'community_reviews#index'
     end
   end
 end

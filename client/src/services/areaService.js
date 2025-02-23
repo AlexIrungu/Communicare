@@ -1,30 +1,49 @@
-// src/services/areaService.js
 import axios from 'axios';
 
 const BASE_URL = 'http://localhost:3001/api/v1';
 
 export const areaService = {
-  getHighRiskAreas: async () => {
-    try {
-        const response = await axios.get("http://localhost:3001/api/v1/areas");
-        return response.data;
-      } catch (error) {
-        console.error('Error fetching high risk areas:', error);
-        throw error;
-      }
-  },
-
   getAllAreas: async () => {
     try {
       const response = await axios.get(`${BASE_URL}/areas`);
-      console.log("API response for getAllAreas:", response.data); // ✅ Debugging log
-      return response.data; // ✅ Only return the actual data
+      
+      // ✅ Debugging to confirm correct data structure
+      console.log("✅ Full API response:", response.data);
+
+      // Ensure the returned data matches the expected format
+      const formattedAreas = response.data.map(area => ({
+        id: area.id,
+        name: area.name,
+        latitude: area.latitude ?? null,
+        longitude: area.longitude ?? null,
+        riskLevel: area.risk_level,  // Ensure correct naming
+        diseases: area.communicable_diseases || [] // Handle missing diseases field
+      }));
+
+      return formattedAreas;
     } catch (error) {
-      console.error("API error in getAllAreas:", error);
+      console.error("❌ API error in getAllAreas:", error);
+      throw error;
+    }
+  },
+
+  getHighRiskAreas: async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/areas/high_risk`);
+      
+      console.log("✅ High-risk areas API response:", response.data);
+
+      return response.data.map(area => ({
+        id: area.id,
+        name: area.name,
+        latitude: area.latitude ?? null,
+        longitude: area.longitude ?? null,
+        riskLevel: area.risk_level,
+        diseases: area.communicable_diseases || []
+      }));
+    } catch (error) {
+      console.error('❌ Error fetching high-risk areas:', error);
       throw error;
     }
   }
-  
-  
-  
 };

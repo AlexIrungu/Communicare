@@ -5,10 +5,20 @@ module Api
       before_action :admin_only, only: [:create, :update, :destroy]
 
      # Then in controllers
-def index
-  @diseases = CommunicableDisease.page(params[:page]).per(10)
-  render json: @diseases, meta: pagination_meta(@diseases)
-end
+     def index
+      areas = Area.includes(:communicable_disease).all
+    
+      render json: areas.as_json(
+        only: [:id, :name, :latitude, :longitude, :risk_level],
+        include: { communicable_disease: { only: [:name] } }
+      )
+    end
+
+    def high_risk
+      @areas = Area.high_risk.includes(:communicable_disease)
+      render json: @areas, include: ['communicable_disease']
+    end
+    
 
 private
 
@@ -27,10 +37,7 @@ end
         render json: area
       end
 
-      def high_risk
-        @areas = Area.high_risk.includes(:communicable_disease)
-        render json: @areas, include: ['communicable_disease']
-      end
+      
 
       def create
         area = Area.create!(area_params)

@@ -10,8 +10,12 @@ class User < ApplicationRecord
   validates :first_name, presence: true
   validates :last_name, presence: true
   validates :email, presence: true, uniqueness: true, format: { with: URI::MailTo::EMAIL_REGEXP }
-  validates :admin, inclusion: { in: [true, false] }
-  
-  # Optional: Add validation for specialty if needed
-  # validates :specialty, presence: true, if: -> { doctor? || nurse? || researcher? }
+
+  after_initialize :set_default_role, if: :new_record?
+
+  private
+
+  def set_default_role
+    self.role ||= :regular
+  end
 end

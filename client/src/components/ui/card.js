@@ -1,3 +1,4 @@
+// src/components/ui/card.js
 import React from 'react';
 
 const Card = ({ className = '', ...props }) => {
@@ -18,6 +19,15 @@ const CardHeader = ({ className = '', ...props }) => {
   );
 };
 
+const CardTitle = ({ className = '', ...props }) => {
+  return (
+    <h3 
+      className={`text-lg font-semibold leading-none tracking-tight ${className}`}
+      {...props}
+    />
+  );
+};
+
 const CardContent = ({ className = '', ...props }) => {
   return (
     <div 
@@ -27,4 +37,4 @@ const CardContent = ({ className = '', ...props }) => {
   );
 };
 
-export { Card, CardHeader, CardContent };
+export { Card, CardHeader, CardTitle, CardContent };

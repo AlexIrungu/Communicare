@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2025_02_21_201408) do
+ActiveRecord::Schema[7.0].define(version: 2025_02_23_172926) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -57,6 +57,13 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_21_201408) do
     t.integer "healthcare_facilities"
     t.text "notes"
     t.index ["communicable_disease_id"], name: "index_areas_on_communicable_disease_id"
+  end
+
+  create_table "blacklist_tokens", force: :cascade do |t|
+    t.string "token"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["token"], name: "index_blacklist_tokens_on_token"
   end
 
   create_table "communicable_diseases", force: :cascade do |t|
@@ -112,6 +119,15 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_21_201408) do
     t.string "language"
     t.string "audience"
     t.datetime "publication_date"
+  end
+
+  create_table "health_alerts", force: :cascade do |t|
+    t.string "title"
+    t.text "description"
+    t.integer "severity"
+    t.string "region"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "jwt_denylist", force: :cascade do |t|
@@ -180,7 +196,6 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_21_201408) do
     t.string "First_name"
     t.string "Last_name"
     t.string "email"
-    t.string "password_digest"
     t.boolean "admin", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -191,6 +206,7 @@ ActiveRecord::Schema[7.0].define(version: 2025_02_21_201408) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.string "specialty"
+    t.string "role", default: "user"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
