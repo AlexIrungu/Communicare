@@ -129,7 +129,7 @@ This project is open-source and available under the [MIT License](LICENSE).
 ## Contact
 For any inquiries, reach out to:
 - **Alex Irungu** (Project Owner)
-- Email: alex@example.com
+- Email: aleaxmuiruri@gmail.com
 - GitHub: [AlexIrungu](https://github.com/AlexIrungu)
 
 ---
