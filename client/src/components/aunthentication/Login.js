@@ -113,20 +113,25 @@ function Login() {
   
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
+  const { loading, error, isAuthenticated, user } = useSelector((state) => state.auth);
 
   useEffect(() => {
+    // clear error message when component mounts
     dispatch(clearError());
     return () => dispatch(clearError());
   }, [dispatch]);
 
   useEffect(() => {
-    if (isAuthenticated) {
-      const redirectPath = localStorage.getItem('redirectAfterLogin') || '/';
-      localStorage.removeItem('redirectAfterLogin');
-      navigate(redirectPath);
+    if (isAuthenticated && user) {
+      console.log('Authentication successful:', user);
+      // Redirect based on user role
+      if (user.isAdmin) {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
   function handleChange(e) {
     setFormData({
@@ -135,18 +140,26 @@ function Login() {
     });
   }
 
-  async function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
       return;
     }
 
-    dispatch(login({
-      email: formData.email,
-      password: formData.password,
-      role: formData.role,
-    }));
-  }
+    try {
+      // Dispatch login action and wait for it to complete
+      const resultAction = await dispatch(login({
+        email: formData.email,
+        password: formData.password,
+        role: formData.role,
+      })).unwrap();
+
+      console.log('Login success:', resultAction);
+    } catch (err) {
+      console.error('Login failed:', err);
+    }
+  };
+
 
   return (
     <Container>

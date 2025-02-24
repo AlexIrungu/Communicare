@@ -26,11 +26,21 @@ const Navbar = () => {
   const location = useLocation();
   const user = useSelector((state) => state.auth.user);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    alert("Logged out successfully!");
-    window.location.reload();
+  const handleLogout = async () => {
+    try {
+      // Dispatch the logout action and wait for it to complete
+      await dispatch(logout()).unwrap();
+      
+      // After successful logout, navigate to landing page
+      navigate("/landing");
+    } catch (error) {
+      console.error("Logout failed:", error);
+      // Even if the logout API call fails, we should still clear local state
+      // Your authSlice already handles this in the rejected case
+      navigate("/landing");
+    }
   };
+
   
   
   

@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import styled, { keyframes } from "styled-components";
+import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { useDispatch, useSelector } from 'react-redux';
+import { signup, clearError } from '../../features/auth/authSlice';
+import styled, { keyframes } from "styled-components";
 
 const slideIn = keyframes`
   from {
@@ -92,55 +94,42 @@ function Signup() {
     password: "",
   });
 
-  const [message, setMessage] = useState("");
-  const nav = useNavigate();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error, isAuthenticated } = useSelector((state) => state.auth);
 
-  function handleChange(e) {
+  useEffect(() => {
+    dispatch(clearError());
+    return () => dispatch(clearError());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate('/');
+    }
+  }, [isAuthenticated, navigate]);
+
+  const handleChange = (e) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
     });
-  }
+  };
 
-  function handleSubmit(e) {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (
-      !formData.first_name ||
-      !formData.last_name ||
-      !formData.email ||
-      !formData.password
-    ) {
-      setMessage("Please fill in all fields");
+    if (!formData.first_name || !formData.last_name || !formData.email || !formData.password) {
       return;
     }
 
-    console.log("Submitting:", formData);
-
-    fetch("http://127.0.0.1:3001/api/v1/users", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formData),
-    })
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Signup failed");
-        }
-      })
-      .then((data) => {
-        console.log("Signup successful:", data);
-        nav("/home");
-        setMessage("Signup successful");
-      })
-      .catch((error) => {
-        console.error("Error:", error);
-        setMessage("Signup failed. Please check the console for more details.");
-      });
-  }
+    try {
+      // Dispatch signup action and wait for it to complete
+      const resultAction = await dispatch(signup(formData)).unwrap();
+      console.log('Signup success:', resultAction);
+    } catch (err) {
+      console.error('Signup failed:', err);
+    }
+  };
 
   return (
     <Container>
@@ -175,13 +164,13 @@ function Signup() {
           onChange={handleChange}
         />
 
-        <Button type="submit">Sign up</Button>
-        {message && <Message isError>{message}</Message>}
+<Button type="submit" disabled={loading}>
+          {loading ? "Signing up..." : "Sign up"}
+        </Button>
+        {error && <Message isError>{error}</Message>}
       </Form>
       <LinkWrapper>
-        <Message>
-          Already have an account? <CustomLink to="/login">Log in</CustomLink>
-        </Message>
+      <CustomLink to="/login">Already have an account? Login here</CustomLink>
       </LinkWrapper>
     </Container>
   );

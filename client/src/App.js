@@ -41,43 +41,39 @@ import LandingPage from "./pages/Landing/LandingPage";
 
 // Create a separate component for the app content
 const AppContent = () => {
-  const user = useSelector((state) => state.auth.user);
+  const { user, loading } = useSelector((state) => state.auth);
   const location = useLocation();
+  
+  // Improved admin route check
   const isAdminRoute = location.pathname.startsWith("/admin");
+  const shouldShowAdminNav = isAdminRoute && user?.isAdmin;
+  const shouldShowMainNav = !isAdminRoute || !user?.isAdmin;
 
   const ProtectedRoute = ({ children }) => {
-    const { user, loading } = useSelector((state) => state.auth);
-    
-    if (loading) return <div>Loading...</div>; // Show a loading state
-    if (!user) return <Navigate to="/login" replace />;
-  
+    if (loading) return <div>Loading...</div>;
+    if (!user) return <Navigate to="/landing" replace />;
     return children;
   };
   
   const AdminRoute = ({ children }) => {
-    const { user, loading } = useSelector((state) => state.auth);
-  
     if (loading) return <div>Loading...</div>;
     if (!user?.isAdmin) return <Navigate to="/" replace />;
-  
     return children;
   };
-  
-  
 
   return (
     <div className="App min-h-screen flex flex-col">
-      {(!isAdminRoute || !user?.isAdmin) && <Navbar />}
-      {isAdminRoute && user?.isAdmin && <AdminNavbar />}
+      {/* Navigation Logic */}
+      {shouldShowMainNav && <Navbar />}
+      {shouldShowAdminNav && <AdminNavbar />}
 
       <div className="flex-1">
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<HomePage />} />
+          <Route path="/landing" element={<LandingPage />} />
           <Route path="/login" element={<Navigate to="/landing" replace />} />
           <Route path="/signup" element={<Navigate to="/landing" replace />} />
-
-          <Route path="/landing" element={<LandingPage />} />
 
           {/* Disease Routes */}
           <Route path="/diseases" element={<DiseaseListPage />} />
@@ -102,44 +98,23 @@ const AppContent = () => {
 
           {/* Admin Routes */}
           <Route
-            path="/admin"
+            path="/admin/*"
             element={
               <AdminRoute>
-                <AdminPage />
+                <Routes>
+                  <Route path="diseases" element={<AdminDiseasePanel />} />
+                  <Route path="areas" element={<AdminAreaPanel />} />
+                  <Route path="donations" element={<AdminDonationPanel />} />
+                  <Route path="users" element={<AdminUserPanel />} />
+                  <Route path="user-management" element={<UserManagement />} />
+                  <Route path="statistics" element={<Statistics />} />
+                  <Route path="community-reviews" element={<CommunityReviews />} />
+                  <Route path="health-alerts" element={<HealthAlerts />} />
+                  <Route index element={<Navigate to="diseases" replace />} />
+                </Routes>
               </AdminRoute>
             }
-          >
-            <Route path="diseases" element={<AdminDiseasePanel />} />
-            <Route path="areas" element={<AdminAreaPanel />} />
-            <Route path="donations" element={<AdminDonationPanel />} />
-            <Route path="users" element={<AdminUserPanel />} />
-            <Route path="user-management" element={<UserManagement />} />
-            <Route
-              path="statistics"
-              element={
-                <AdminRoute>
-                  <Statistics />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="community-reviews"
-              element={
-                <AdminRoute>
-                  <CommunityReviews />
-                </AdminRoute>
-              }
-            />
-            <Route
-              path="health-alerts"
-              element={
-                <AdminRoute>
-                  <HealthAlerts />
-                </AdminRoute>
-              }
-            />
-            <Route index element={<Navigate to="diseases" replace />} />
-          </Route>
+          />
 
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />
@@ -148,6 +123,8 @@ const AppContent = () => {
     </div>
   );
 };
+
+
 
 // Main App component
 const App = () => {

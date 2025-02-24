@@ -1,39 +1,30 @@
+// diseasesSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import diseaseService from '../../services/diseaseService';
-
-// Async thunks
-export const fetchDiseases = createAsyncThunk(
-  'diseases/fetchDiseases',
-  async (_, { rejectWithValue }) => {
-    try {
-      const response = await diseaseService.getAllDiseases();
-      return response.data;
-    } catch (error) {
-      return rejectWithValue(error.response.data);
-    }
-  }
-);
 
 export const fetchAllDiseases = createAsyncThunk(
   'diseases/fetchAllDiseases',
   async (_, { rejectWithValue }) => {
     try {
       const response = await diseaseService.getAllDiseases();
+      console.log('All diseases API response:', response);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Failed to fetch diseases');
     }
   }
 );
-
+// diseasesSlice.js
 export const fetchFeaturedDiseases = createAsyncThunk(
   'diseases/fetchFeaturedDiseases',
   async (_, { rejectWithValue }) => {
     try {
       const response = await diseaseService.getFeaturedDiseases();
-      return response.data;
+      console.log('Featured diseases response:', response.data);
+      return response.data; // Axios puts the response body in .data
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      console.error('Error fetching featured diseases:', error);
+      return rejectWithValue(error.response?.data || 'Failed to fetch featured diseases');
     }
   }
 );
@@ -45,7 +36,7 @@ export const fetchDiseaseById = createAsyncThunk(
       const response = await diseaseService.getDiseaseById(id);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Failed to fetch disease details');
     }
   }
 );
@@ -66,19 +57,6 @@ const diseasesSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // Handle fetchDiseases
-      .addCase(fetchDiseases.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(fetchDiseases.fulfilled, (state, action) => {
-        state.loading = false;
-        state.diseases = action.payload;
-      })
-      .addCase(fetchDiseases.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload || 'Failed to fetch diseases';
-      })
       // Handle fetchAllDiseases
       .addCase(fetchAllDiseases.pending, (state) => {
         state.loading = true;
@@ -90,7 +68,7 @@ const diseasesSlice = createSlice({
       })
       .addCase(fetchAllDiseases.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to fetch all diseases';
+        state.error = action.payload;
       })
       // Handle fetchFeaturedDiseases
       .addCase(fetchFeaturedDiseases.pending, (state) => {
@@ -100,10 +78,11 @@ const diseasesSlice = createSlice({
       .addCase(fetchFeaturedDiseases.fulfilled, (state, action) => {
         state.loading = false;
         state.featuredDiseases = action.payload;
+        console.log('Featured diseases updated in store:', action.payload);
       })
       .addCase(fetchFeaturedDiseases.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to fetch featured diseases';
+        state.error = action.payload;
       })
       // Handle fetchDiseaseById
       .addCase(fetchDiseaseById.pending, (state) => {
@@ -116,7 +95,7 @@ const diseasesSlice = createSlice({
       })
       .addCase(fetchDiseaseById.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.payload || 'Failed to fetch disease details';
+        state.error = action.payload;
       });
   },
 });
