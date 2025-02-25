@@ -1,37 +1,46 @@
-// HomePage.js
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchFeaturedDiseases } from '../../features/diseases/diseasesSlice';
 import { fetchHighRiskAreas } from '../../features/areas/areasSlice';
 import { fetchRecentDonations } from '../../features/donations/donationsSlice';
+import { createSelector } from 'reselect';
+
+// Memoized selectors
+const selectDiseasesState = state => state.diseases;
+const selectFeaturedDiseases = createSelector(
+  [selectDiseasesState],
+  diseasesState => diseasesState.featuredDiseases || []
+);
+
+const selectAreasState = state => state.areas;
+const selectHighRiskAreas = createSelector(
+  [selectAreasState],
+  areasState => areasState.highRiskAreas || []
+);
+
+const selectDonationsState = state => state.donations;
+const selectRecentDonations = createSelector(
+  [selectDonationsState],
+  donationsState => donationsState.recentDonations || []
+);
 
 const HomePage = () => {
   const dispatch = useDispatch();
   
-  const { 
-    featuredDiseases = [], 
-    loading: diseasesLoading, 
-    error: diseasesError 
-  } = useSelector(state => {
-    console.log('Full diseases state:', state.diseases);
-    return state.diseases;
-  });
+  const featuredDiseases = useSelector(selectFeaturedDiseases);
+  const highRiskAreas = useSelector(selectHighRiskAreas);
+  const recentDonations = useSelector(selectRecentDonations);
   
-  const { 
-    highRiskAreas = [], 
-    loading: areasLoading, 
-    error: areasError 
-  } = useSelector(state => {
-    console.log('Full areas state:', state.areas);
-    return {
-      highRiskAreas: state.areas.highRiskAreas || [],
-      loading: state.areas.loading,
-      error: state.areas.error
-    };
-  });
+  const diseasesLoading = useSelector(state => state.diseases.loading);
+  const diseasesError = useSelector(state => state.diseases.error);
   
-  // Add debug logging in useEffect
+  const areasLoading = useSelector(state => state.areas.loading);
+  const areasError = useSelector(state => state.areas.error);
+  
+  const donationsLoading = useSelector(state => state.donations.loading);
+  const donationsError = useSelector(state => state.donations.error);
+  
   useEffect(() => {
     console.log('Dispatching initial data fetches');
     Promise.all([
@@ -45,28 +54,6 @@ const HomePage = () => {
     });
   }, [dispatch]);
 
-  const { 
-    recentDonations = [], 
-    loading: donationsLoading, 
-    error: donationsError 
-  } = useSelector(state => state.donations || {});
-
-  useEffect(() => {
-    console.log('Dispatching initial data fetches');
-    dispatch(fetchFeaturedDiseases())
-      .then(result => console.log('Featured diseases fetch result:', result))
-      .catch(error => console.error('Featured diseases fetch error:', error));
-    
-    dispatch(fetchHighRiskAreas())
-      .then(result => console.log('High risk areas fetch result:', result))
-      .catch(error => console.error('High risk areas fetch error:', error));
-    
-    dispatch(fetchRecentDonations())
-      .then(result => console.log('Recent donations fetch result:', result))
-      .catch(error => console.error('Recent donations fetch error:', error));
-  }, [dispatch]);
-
-  // Debug logging
   useEffect(() => {
     console.log('Current featured diseases:', featuredDiseases);
     console.log('Current high risk areas:', highRiskAreas);

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -6,7 +6,8 @@ import {
   Navigate,
   useLocation,
 } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { checkAuthStatus } from "./features/auth/authSlice";
 
 // Page Components
 import HomePage from "./pages/Home/HomePage";
@@ -32,6 +33,7 @@ import UserManagement from "./components/admin/UserManagement";
 // Common Components
 import Navbar from "./components/common/Navbar";
 import ErrorMessage from "./components/common/ErrorMessage";
+import LoadingSpinner from "./components/common/LoadingSpinner";
 
 import AdminNavbar from "./components/common/AdminNavbar";
 import Statistics from "./pages/Admin/Statistics";
@@ -41,23 +43,32 @@ import LandingPage from "./pages/Landing/LandingPage";
 
 // Create a separate component for the app content
 const AppContent = () => {
-  const { user, loading } = useSelector((state) => state.auth);
+  const { user, isAuthenticated, loading } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   const location = useLocation();
   
-  // Improved admin route check
+  // Check authentication status when app loads
+  useEffect(() => {
+    dispatch(checkAuthStatus());
+  }, [dispatch]);
+  
+  // Determine which navbar to show
   const isAdminRoute = location.pathname.startsWith("/admin");
-  const shouldShowAdminNav = isAdminRoute && user?.isAdmin;
-  const shouldShowMainNav = !isAdminRoute || !user?.isAdmin;
+  const shouldShowAdminNav = isAdminRoute && isAuthenticated && user?.isAdmin;
+  const shouldShowMainNav = !shouldShowAdminNav;
+
+  // Loading state while checking auth status
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   const ProtectedRoute = ({ children }) => {
-    if (loading) return <div>Loading...</div>;
-    if (!user) return <Navigate to="/landing" replace />;
+    if (!isAuthenticated) return <Navigate to="/landing" replace />;
     return children;
   };
   
   const AdminRoute = ({ children }) => {
-    if (loading) return <div>Loading...</div>;
-    if (!user?.isAdmin) return <Navigate to="/" replace />;
+    if (!isAuthenticated || !user?.isAdmin) return <Navigate to="/" replace />;
     return children;
   };
 
@@ -123,8 +134,6 @@ const AppContent = () => {
     </div>
   );
 };
-
-
 
 // Main App component
 const App = () => {

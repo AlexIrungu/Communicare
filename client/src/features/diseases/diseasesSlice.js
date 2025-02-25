@@ -1,4 +1,3 @@
-// diseasesSlice.js
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import diseaseService from '../../services/diseaseService';
 
@@ -14,7 +13,7 @@ export const fetchAllDiseases = createAsyncThunk(
     }
   }
 );
-// diseasesSlice.js
+
 export const fetchFeaturedDiseases = createAsyncThunk(
   'diseases/fetchFeaturedDiseases',
   async (_, { rejectWithValue }) => {

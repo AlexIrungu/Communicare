@@ -22,50 +22,19 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Add this
+  const navigate = useNavigate();
   const location = useLocation();
-  const user = useSelector((state) => state.auth.user);
+  const { user, isAuthenticated } = useSelector((state) => state.auth);
 
   const handleLogout = async () => {
     try {
-      // Dispatch the logout action and wait for it to complete
-      await dispatch(logout()).unwrap();
-      
-      // After successful logout, navigate to landing page
+      await dispatch(logout());
       navigate("/landing");
     } catch (error) {
       console.error("Logout failed:", error);
-      // Even if the logout API call fails, we should still clear local state
-      // Your authSlice already handles this in the rejected case
       navigate("/landing");
     }
   };
-
-  
-  
-  
-  const requestLogoutCode = async () => {
-    try {
-      const response = await fetch("http://localhost:3001/api/v1/request_logout_code", {
-        method: "GET",
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-      });
-  
-      const data = await response.json();
-      if (response.ok) {
-        const code = prompt(`Enter the logout code sent to your email: ${data.logout_code}`);
-        handleLogout(code);
-      } else {
-        console.error("Error requesting logout code:", data.error);
-      }
-    } catch (error) {
-      console.error("Network error:", error);
-    }
-  };
-  
-  
-  
-  
 
   const isActivePath = (path) => {
     return location.pathname === path;
@@ -185,8 +154,8 @@ const Navbar = () => {
             {/* Donate Button */}
             <NavLink to="/donate" icon={Heart}>Support Us</NavLink>
 
-            {/* User Section */}
-            {user ? (
+           {/* User Section */}
+           {isAuthenticated && user ? (
               <div className="flex items-center space-x-3 ml-4">
                 <span className="text-white font-medium">
                   Welcome, {user.name}
@@ -202,10 +171,7 @@ const Navbar = () => {
                   </Link>
                 )}
                 <button
-                  onClick={() => {
-                    handleLogout();
-                    closeDropdowns();
-                  }}
+                  onClick={handleLogout}
                   className="flex items-center px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors duration-200 shadow-md hover:shadow-lg"
                 >
                   <LogOut className="w-5 h-5 mr-2" />
@@ -214,12 +180,12 @@ const Navbar = () => {
               </div>
             ) : (
               <Link
-              to="/landing"
-              className="ml-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-400 transition-all duration-200 shadow-md hover:shadow-lg"
-              onClick={closeDropdowns}
-            >
-              Login / Register
-            </Link>
+                to="/landing"
+                className="ml-4 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-all duration-200 shadow-md hover:shadow-lg"
+                onClick={closeDropdowns}
+              >
+                Login / Register
+              </Link>
             )}
           </div>
 
@@ -308,7 +274,7 @@ const Navbar = () => {
             Support Us
           </Link>
 
-          {user ? (
+          {isAuthenticated && user ? (
             <div className="space-y-2 pt-2 border-t border-blue-600">
               {user.isAdmin && (
                 <Link
@@ -333,8 +299,8 @@ const Navbar = () => {
             </div>
           ) : (
             <Link
-              to="/login"
-              className="block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-400 transition-colors"
+              to="/landing"
+              className="block px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-500 transition-colors"
               onClick={() => setIsMenuOpen(false)}
             >
               Login / Register

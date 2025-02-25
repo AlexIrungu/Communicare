@@ -1,110 +1,9 @@
 import React, { useState, useEffect } from "react";
-import styled, { keyframes } from "styled-components";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux';
 import { login, clearError } from '../../features/auth/authSlice';
 
-const slideIn = keyframes`
-  from {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-`;
-
-const slideOut = keyframes`
-  from {
-    transform: translateX(0);
-    opacity: 1;
-  }
-  to {
-    transform: translateX(-100%);
-    opacity: 0;
-  }
-`;
-
-const Container = styled.div`
-  max-width: 600px;
-  margin: 0 auto;
-  padding: 40px;
-  background-color: #fff;
-  border-radius: 8px;
-  animation: ${slideIn} 0.5s forwards;
-  ${({ isHidden }) =>
-    isHidden &&
-    `
-    animation: ${slideOut} 0.5s forwards;
-  `}
-`;
-
-const Title = styled.h1`
-  text-align: center;
-  margin-bottom: 40px;
-  color: #333;
-`;
-
-const Form = styled.form`
-  display: flex;
-  flex-direction: column;
-`;
-
-const Input = styled.input`
-  margin-bottom: 20px;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #f2f2f2;
-  font-size: 16px;
-`;
-
-const Button = styled.button`
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: rgba(26, 143, 227, 1);
-  color: #fff;
-  font-size: 16px;
-  cursor: pointer;
-  &:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-  }
-`;
-
-const Message = styled.p`
-  margin-top: 20px;
-  text-align: center;
-  font-size: 16px;
-  color: ${({ isError }) => (isError ? "red" : "green")};
-`;
-
-const LinkWrapper = styled.div`
-  margin-top: 20px;
-  text-align: center;
-`;
-
-const CustomLink = styled(Link)`
-  color: rgba(26, 143, 227, 1);
-`;
-
-const Select = styled.select`
-  margin-bottom: 20px;
-  padding: 10px;
-  border: none;
-  border-radius: 8px;
-  background-color: #f2f2f2;
-  font-size: 16px;
-`;
-
-const Label = styled.label`
-  margin-bottom: 8px;
-  color: #333;
-`;
-
-function Login() {
+const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -123,22 +22,20 @@ function Login() {
 
   useEffect(() => {
     if (isAuthenticated && user) {
-      console.log('Authentication successful:', user);
-      // Redirect based on user role
-      if (user.isAdmin) {
-        navigate('/admin');
-      } else {
-        navigate('/');
-      }
+      setTimeout(() => {
+        if (user.isAdmin) {
+          navigate('/admin');
+        } else {
+          navigate('/');
+        }
+      }, 100);
     }
   }, [isAuthenticated, user, navigate]);
 
-  function handleChange(e) {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  }
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -147,25 +44,21 @@ function Login() {
     }
 
     try {
-      // Dispatch login action and wait for it to complete
-      const resultAction = await dispatch(login({
+      await dispatch(login({
         email: formData.email,
         password: formData.password,
         role: formData.role,
       })).unwrap();
-
-      console.log('Login success:', resultAction);
     } catch (err) {
-      console.error('Login failed:', err);
+      console.error('Login dispatch error:', err);
     }
   };
 
-
   return (
-    <Container>
-      <Title>Login</Title>
-      <Form onSubmit={handleSubmit}>
-        <Input
+    <div>
+      <h1>Login</h1>
+      <form onSubmit={handleSubmit}>
+        <input
           type="email"
           name="email"
           placeholder="Email"
@@ -173,7 +66,7 @@ function Login() {
           onChange={handleChange}
           disabled={loading}
         />
-        <Input
+        <input
           type="password"
           name="password"
           placeholder="Password"
@@ -181,27 +74,22 @@ function Login() {
           onChange={handleChange}
           disabled={loading}
         />
-        <Label htmlFor="role">Login as:</Label>
-        <Select
+        <select
           name="role"
-          id="role"
           value={formData.role}
           onChange={handleChange}
           disabled={loading}
         >
           <option value="user">User</option>
           <option value="admin">Admin</option>
-        </Select>
-        <Button type="submit" disabled={loading}>
+        </select>
+        <button type="submit" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
-        </Button>
-      </Form>
-      {error && <Message isError>{error}</Message>}
-      <LinkWrapper>
-        <CustomLink to="/signup">Don't have an account? Signup here</CustomLink>
-      </LinkWrapper>
-    </Container>
+        </button>
+      </form>
+      {error && <p>{error}</p>}
+    </div>
   );
-}
+};
 
 export default Login;
