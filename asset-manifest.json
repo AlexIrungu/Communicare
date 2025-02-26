@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/Communicare/static/css/main.3818c8e9.css",
+    "main.js": "/Communicare/static/js/main.e3784932.js",
+    "index.html": "/Communicare/index.html",
+    "main.3818c8e9.css.map": "/Communicare/static/css/main.3818c8e9.css.map",
+    "main.e3784932.js.map": "/Communicare/static/js/main.e3784932.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.3818c8e9.css",
+    "static/js/main.e3784932.js"
+  ]
+}
