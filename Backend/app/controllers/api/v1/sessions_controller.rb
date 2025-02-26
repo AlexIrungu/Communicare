@@ -14,8 +14,8 @@ module Api
           user_data = {
             id: user.id,
             email: user.email, 
-            name: "#{user.first_name} #{user.last_name}", # Fixed: Concatenate first_name and last_name
-            isAdmin: user.admin? # Adjust based on how you determine admin status
+            name: "#{user.first_name} #{user.last_name}",
+            isAdmin: user.admin # Change from admin? to admin
           }
           
           # Log the response for debugging
