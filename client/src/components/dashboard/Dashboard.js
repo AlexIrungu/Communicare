@@ -1,9 +1,10 @@
 // src/components/dashboard/Dashboard.js
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchDiseases } from '../../features/diseases/diseasesSlice';
-import { fetchAreas } from '../../features/areas/areasSlice';
-import { fetchDonations } from '../../features/donations/donationsSlice';
+import { fetchAllDiseases } from '../../features/diseases/diseasesSlice';
+import { fetchAllAreas } from '../../features/areas/areasSlice';
+import { fetchRecentDonations } from '../../features/donations/donationsSlice';
+
 import { Card } from '../ui/card';
 import { LineChart, XAxis, YAxis, Tooltip, Legend, Line, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
 import LoadingSpinner from '../common/LoadingSpinner';
@@ -21,9 +22,9 @@ const Dashboard = () => {
   const hasError = diseasesError || areasError || donationsError;
 
   useEffect(() => {
-    dispatch(fetchDiseases());
-    dispatch(fetchAreas());
-    dispatch(fetchDonations());
+    dispatch(fetchAllDiseases());
+    dispatch(fetchAllAreas());
+    dispatch(fetchRecentDonations());
   }, [dispatch]);
 
   // Prepare data for charts

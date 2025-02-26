@@ -4,57 +4,25 @@ import axios from 'axios';
 const API_URL = 'http://localhost:3001/api/v1';
 
 const reviewService = {
-  // Get statistics
   getStatistics: async () => {
     try {
-      const response = await axios.get(`${API_URL}/statistics`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
+      const token = localStorage.getItem("token"); // Retrieve token
 
-  // Get community reviews
-  getCommunityReviews: async (page = 1, limit = 10) => {
-    try {
-      const response = await axios.get(`${API_URL}/reviews`, {
-        params: { page, limit }
+      if (!token) {
+        console.error("No auth token found!");
+        throw new Error("Unauthorized: No token found.");
+      }
+
+      const response = await axios.get(`${API_URL}/statistics`, {
+        headers: { Authorization: `Bearer ${token}` } // Include token in headers
       });
+
       return response.data;
     } catch (error) {
+      console.error("API Error:", error.response?.data || error.message);
       throw error;
     }
   },
-
-  // Get health alerts
-  getHealthAlerts: async () => {
-    try {
-      const response = await axios.get(`${API_URL}/health-alerts`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Approve a review
-  approveReview: async (reviewId) => {
-    try {
-      const response = await axios.patch(`${API_URL}/reviews/${reviewId}/approve`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  },
-
-  // Reject a review
-  rejectReview: async (reviewId) => {
-    try {
-      const response = await axios.patch(`${API_URL}/reviews/${reviewId}/reject`);
-      return response.data;
-    } catch (error) {
-      throw error;
-    }
-  }
 };
 
 export default reviewService;

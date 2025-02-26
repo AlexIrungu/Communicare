@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { Activity } from 'lucide-react';
+import { login, register } from '../../features/auth/authSlice';
 
 const LandingPage = () => {
   const [isLogin, setIsLogin] = useState(true);
@@ -13,49 +14,69 @@ const LandingPage = () => {
     confirmPassword: '',
     adminCode: ''
   });
-  const [error, setError] = useState('');
   
   const dispatch = useDispatch();
+  const { loading, error, isAuthenticated, user } = useSelector((state) => state.auth);
   const navigate = useNavigate();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      navigate(user.isAdmin ? '/admin' : '/');
+    }
+  }, [isAuthenticated, user, navigate]);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
   
     if (!isLogin && formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return;
+      return; // The error will be shown in the form validation
     }
   
     try {
-      const endpoint = isLogin
-        ? `http://localhost:3001/api/v1/login`
-        : `http://localhost:3001/api/v1/signup`;
-  
-      const bodyData = isLogin
-        ? { email: formData.email, password: formData.password } // ✅ Fix for login
-        : { name: formData.name, email: formData.email, password: formData.password };
-  
-      const response = await fetch(endpoint, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(bodyData),
-        credentials: 'include',
-      });
-  
-      const data = await response.json();
-  
-      if (response.ok) {
-        dispatch({ type: 'auth/login', payload: data.user });
-        navigate(data.user.isAdmin ? '/admin' : '/');
+      if (isLogin) {
+        // Login action
+        await dispatch(login({
+          email: formData.email,
+          password: formData.password,
+          isAdmin: isAdmin // Pass isAdmin flag to handle different login endpoints if needed
+        })).unwrap();
       } else {
-        setError(data.error || 'Authentication failed');
+        // Register action
+        await dispatch(register({
+          name: formData.name,
+          email: formData.email,
+          password: formData.password,
+          isAdmin: isAdmin,
+          adminCode: isAdmin ? formData.adminCode : undefined
+        })).unwrap();
       }
+      // Navigation is handled by the useEffect when auth state changes
     } catch (err) {
-      setError('An error occurred. Please try again.');
+      // Error handling is managed by Redux, no need to set local error state
+      console.error('Authentication error:', err);
     }
   };
-  
+
+  // Form validation
+  const getPasswordMatchError = () => {
+    if (!isLogin && formData.password && formData.confirmPassword && 
+        formData.password !== formData.confirmPassword) {
+      return 'Passwords do not match';
+    }
+    return '';
+  };
+
+  const passwordMatchError = getPasswordMatchError();
+  const isSubmitDisabled = !isLogin && passwordMatchError;
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100">
@@ -82,6 +103,7 @@ const LandingPage = () => {
             {/* Toggle Buttons */}
             <div className="flex mb-6">
               <button
+                type="button"
                 className={`flex-1 py-2 text-center rounded-l-lg transition-colors ${
                   isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
@@ -90,6 +112,7 @@ const LandingPage = () => {
                 Login
               </button>
               <button
+                type="button"
                 className={`flex-1 py-2 text-center rounded-r-lg transition-colors ${
                   !isLogin ? 'bg-blue-600 text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
                 }`}
@@ -116,71 +139,91 @@ const LandingPage = () => {
             <form onSubmit={handleSubmit} className="space-y-4">
               {!isLogin && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                     Name
                   </label>
                   <input
+                    id="name"
+                    name="name"
                     type="text"
                     value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required
+                    autoComplete="name"
                   />
                 </div>
               )}
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                   Email
                 </label>
                 <input
+                  id="email"
+                  name="email"
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({...formData, email: e.target.value})}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
+                  autoComplete="email"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                   Password
                 </label>
                 <input
+                  id="password"
+                  name="password"
                   type="password"
                   value={formData.password}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
+                  onChange={handleInputChange}
                   className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
+                  autoComplete={isLogin ? "current-password" : "new-password"}
                 />
               </div>
 
               {!isLogin && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
                     Confirm Password
                   </label>
                   <input
+                    id="confirmPassword"
+                    name="confirmPassword"
                     type="password"
                     value={formData.confirmPassword}
-                    onChange={(e) => setFormData({...formData, confirmPassword: e.target.value})}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    onChange={handleInputChange}
+                    className={`w-full px-4 py-2 border ${
+                      passwordMatchError ? 'border-red-500' : 'border-gray-300'
+                    } rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent`}
                     required
+                    autoComplete="new-password"
                   />
+                  {passwordMatchError && (
+                    <p className="mt-1 text-sm text-red-600">{passwordMatchError}</p>
+                  )}
                 </div>
               )}
 
               {isAdmin && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label htmlFor="adminCode" className="block text-sm font-medium text-gray-700 mb-1">
                     Admin Code
                   </label>
                   <input
+                    id="adminCode"
+                    name="adminCode"
                     type="password"
                     value={formData.adminCode}
-                    onChange={(e) => setFormData({...formData, adminCode: e.target.value})}
+                    onChange={handleInputChange}
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     required={isAdmin}
+                    autoComplete="off"
                   />
                 </div>
               )}
@@ -193,9 +236,22 @@ const LandingPage = () => {
 
               <button
                 type="submit"
-                className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                disabled={loading || isSubmitDisabled}
+                className={`w-full py-2 px-4 ${
+                  loading || isSubmitDisabled ? 'bg-blue-400' : 'bg-blue-600 hover:bg-blue-700'
+                } text-white rounded-lg transition-colors focus:ring-2 focus:ring-offset-2 focus:ring-blue-500`}
               >
-                {isLogin ? 'Login' : 'Register'}
+                {loading ? (
+                  <span className="flex items-center justify-center">
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    {isLogin ? 'Logging in...' : 'Registering...'}
+                  </span>
+                ) : (
+                  isLogin ? 'Login' : 'Register'
+                )}
               </button>
             </form>
           </div>

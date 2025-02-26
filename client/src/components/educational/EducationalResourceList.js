@@ -50,8 +50,19 @@ const EducationalResourceList = ({ diseaseId }) => {
     return <LoadingSpinner />;
   }
   
-  if (status === 'failed') {
-    return <ErrorMessage message={error} />;
+  // With this:
+if (status === 'failed') {
+    // Extract a meaningful error message
+    let errorMessage = 'Failed to load resources. Please try again later.';
+    if (typeof error === 'string') {
+      errorMessage = error;
+    } else if (error && error.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+      errorMessage = error.errors[0];
+    } else if (error && error.message) {
+      errorMessage = error.message;
+    }
+    
+    return <ErrorMessage message={errorMessage} />;
   }
   
   return (

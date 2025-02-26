@@ -1,13 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import LoadingSpinner from '../components/common/LoadingSpinner';
-import ErrorMessage from '../components/common/ErrorMessage';
-import Modal from '../components/common/Modal';
+import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Alert, AlertDescription } from '../ui/alert';
+import LoadingSpinner from '../common/LoadingSpinner';
+import ErrorMessage from '../common/ErrorMessage';
+import Modal from '../common/Modal';
 
 // Placeholder for actual user slice actions
-const { fetchUserProfile, updateUserProfile, updateHealthRecord } = require('../features/auth/authSlice');
+const { fetchUserProfile, updateUserProfile, updateHealthRecord } = require('../../features/auth/authSlice');
 
 const UserProfile = () => {
   const dispatch = useDispatch();

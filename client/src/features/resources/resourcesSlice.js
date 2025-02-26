@@ -2,53 +2,86 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
 
+// Set the base API URL (default to localhost if not set in environment variables)
+const BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3001/api/v1';
+
+// Helper function to extract a readable error message
+const extractErrorMessage = (error) => {
+  if (error?.errors && Array.isArray(error.errors) && error.errors.length > 0) {
+    return error.errors[0];
+  }
+  if (error?.message) {
+    return error.message;
+  }
+  return 'An unknown error occurred';
+};
+
+/**
+ * Fetch resources, optionally filtered by diseaseId.
+ */
 export const fetchResources = createAsyncThunk(
   'resources/fetchResources',
   async (diseaseId, { rejectWithValue }) => {
     try {
-      // If diseaseId is provided, fetch resources for that disease
-      // Otherwise, fetch all resources
-      const url = diseaseId ? `/api/resources/disease/${diseaseId}` : '/api/resources';
+      const url = diseaseId ? `${BASE_URL}/resources/disease/${diseaseId}` : `${BASE_URL}/resources`;
       const response = await axios.get(url);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const errorData = error.response?.data || 'Failed to fetch resources';
+      // Extract a readable error message instead of passing the entire object
+      const errorMessage = extractErrorMessage(errorData);
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
+/**
+ * Add a new resource.
+ */
 export const addResource = createAsyncThunk(
   'resources/addResource',
   async (resourceData, { rejectWithValue }) => {
     try {
-      const response = await axios.post('/api/resources', resourceData);
+      const response = await axios.post(`${BASE_URL}/resources`, resourceData);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const errorData = error.response?.data || 'Failed to add resource';
+      const errorMessage = extractErrorMessage(errorData);
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
+/**
+ * Update an existing resource.
+ */
 export const updateResource = createAsyncThunk(
   'resources/updateResource',
   async ({ id, data }, { rejectWithValue }) => {
     try {
-      const response = await axios.put(`/api/resources/${id}`, data);
+      const response = await axios.put(`${BASE_URL}/resources/${id}`, data);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const errorData = error.response?.data || 'Failed to update resource';
+      const errorMessage = extractErrorMessage(errorData);
+      return rejectWithValue(errorMessage);
     }
   }
 );
 
+/**
+ * Delete a resource by ID.
+ */
 export const deleteResource = createAsyncThunk(
   'resources/deleteResource',
   async (id, { rejectWithValue }) => {
     try {
-      await axios.delete(`/api/resources/${id}`);
+      await axios.delete(`${BASE_URL}/resources/${id}`);
       return id;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      const errorData = error.response?.data || 'Failed to delete resource';
+      const errorMessage = extractErrorMessage(errorData);
+      return rejectWithValue(errorMessage);
     }
   }
 );
@@ -72,7 +105,7 @@ const resourcesSlice = createSlice({
       })
       .addCase(fetchResources.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.payload || 'Failed to fetch resources';
+        state.error = action.payload;
       })
       .addCase(addResource.fulfilled, (state, action) => {
         state.resources.push(action.payload);

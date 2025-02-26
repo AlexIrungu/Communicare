@@ -24,11 +24,12 @@ const authService = {
   login: async (credentials) => {
     try {
       console.log('Login attempt with:', { email: credentials.email, role: credentials.role });
+      
+      // Change this line to use '/login' instead of '/sessions'
       const response = await axios.post(`${API_URL}/login`, credentials);
       
       if (response.data.token) {
         localStorage.setItem('token', response.data.token);
-        // Store user data in localStorage for persistence
         localStorage.setItem('user', JSON.stringify(response.data.user));
       }
       
@@ -68,7 +69,6 @@ const authService = {
       return response;
     } catch (error) {
       console.error('Logout error:', error);
-      // Still clear local storage even if API call fails
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       throw error;
@@ -80,29 +80,35 @@ const authService = {
       const token = localStorage.getItem('token');
       const storedUser = localStorage.getItem('user');
       
-      if (!token) {
-        return null;
-      }
+      if (!token) return null;
 
-      // First try to get user from localStorage
       if (storedUser) {
         return { data: { user: JSON.parse(storedUser) } };
       }
 
-      // If not in localStorage, fetch from API
       const response = await axios.get(`${API_URL}/current_user`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      
-      // Update localStorage with fresh user data
+
       localStorage.setItem('user', JSON.stringify(response.data.user));
       return response;
     } catch (error) {
       console.error('Get current user error:', error);
-      // Clear storage if token is invalid
       localStorage.removeItem('token');
       localStorage.removeItem('user');
       return null;
+    }
+  },
+
+  verifyToken: async (token) => {
+    try {
+      const response = await axios.post(`${API_URL}/verify_token`, {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      return response;
+    } catch (error) {
+      console.error('Token verification failed:', error);
+      throw error;
     }
   }
 };
