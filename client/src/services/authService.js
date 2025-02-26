@@ -110,6 +110,16 @@ const authService = {
       console.error('Token verification failed:', error);
       throw error;
     }
+  },
+
+  // Add isLoggedIn method that reviewService.js is trying to use
+  isLoggedIn: () => {
+    return !!localStorage.getItem('token');
+  },
+
+  // Utility method to get the token
+  getToken: () => {
+    return localStorage.getItem('token');
   }
 };
 

@@ -7,11 +7,11 @@ export const fetchAlerts = createAsyncThunk(
   'alerts/fetchAlerts',
   async (userId, { rejectWithValue }) => {
     try {
-      // Replace with your API endpoint
-      const response = await axios.get(`/api/alerts/user/${userId}`);
+      // Updated path to match your Rails API routes
+      const response = await axios.get(`/api/v1/health-alerts?user_id=${userId}`);
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Failed to fetch alerts');
     }
   }
 );
@@ -21,11 +21,11 @@ export const markAlertAsRead = createAsyncThunk(
   'alerts/markAsRead',
   async (alertId, { rejectWithValue }) => {
     try {
-      // Replace with your API endpoint
-      const response = await axios.patch(`/api/alerts/${alertId}`, { read: true });
+      // Updated path to match your Rails API routes
+      const response = await axios.patch(`/api/v1/health-alerts/${alertId}`, { read: true });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Failed to mark alert as read');
     }
   }
 );
@@ -35,11 +35,11 @@ export const subscribeToAreaAlerts = createAsyncThunk(
   'alerts/subscribeToArea',
   async ({ userId, areaId }, { rejectWithValue }) => {
     try {
-      // Replace with your API endpoint
-      const response = await axios.post('/api/alerts/subscribe', { userId, areaId });
+      // Updated path to match your Rails API routes
+      const response = await axios.post('/api/v1/health-alerts/subscribe', { user_id: userId, area_id: areaId });
       return response.data;
     } catch (error) {
-      return rejectWithValue(error.response.data);
+      return rejectWithValue(error.response?.data || 'Failed to subscribe to area alerts');
     }
   }
 );
