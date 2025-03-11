@@ -65,4 +65,4 @@ gem 'rack-attack'
 # Add to your main gem list (not in any group)
 gem 'dotenv-rails'
 gem 'groupdate'
-gem 'logger'
+gem 'logger', '~> 1.6.0'
