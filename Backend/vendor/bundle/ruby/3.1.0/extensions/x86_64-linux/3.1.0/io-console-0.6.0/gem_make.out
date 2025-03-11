@@ -1,0 +1,22 @@
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/io-console-0.6.0/ext/io/console
+/home/alex-irungu/.rvm/rubies/ruby-3.1.4/bin/ruby extconf.rb
+checking for termios.h... yes
+checking for cfmakeraw() in termios.h... yes
+checking for sys/ioctl.h... yes
+checking for HAVE_RUBY_FIBER_SCHEDULER_H... yes
+creating Makefile
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/io-console-0.6.0/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-mn9q15 sitelibdir\=./.gem.20250311-59502-mn9q15 clean
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/io-console-0.6.0/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-mn9q15 sitelibdir\=./.gem.20250311-59502-mn9q15
+compiling console.c
+linking shared-object io/console.so
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/io-console-0.6.0/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-mn9q15 sitelibdir\=./.gem.20250311-59502-mn9q15 install
+/usr/bin/install -c -m 0755 console.so ./.gem.20250311-59502-mn9q15/io
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/io-console-0.6.0/ext/io/console
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-mn9q15 sitelibdir\=./.gem.20250311-59502-mn9q15 clean

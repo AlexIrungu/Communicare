@@ -1,0 +1,20 @@
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/strscan-3.0.9/ext/strscan
+/home/alex-irungu/.rvm/rubies/ruby-3.1.4/bin/ruby extconf.rb
+checking for onig_region_memsize() in ruby.h... yes
+checking for rb_reg_onig_match() in ruby.h... no
+creating Makefile
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/strscan-3.0.9/ext/strscan
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-a3nwaq sitelibdir\=./.gem.20250311-59502-a3nwaq clean
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/strscan-3.0.9/ext/strscan
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-a3nwaq sitelibdir\=./.gem.20250311-59502-a3nwaq
+compiling strscan.c
+linking shared-object strscan.so
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/strscan-3.0.9/ext/strscan
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-a3nwaq sitelibdir\=./.gem.20250311-59502-a3nwaq install
+/usr/bin/install -c -m 0755 strscan.so ./.gem.20250311-59502-a3nwaq
+
+current directory: /home/alex-irungu/Documents/projects/Communicare/Backend/vendor/bundle/ruby/3.1.0/gems/strscan-3.0.9/ext/strscan
+make DESTDIR\= sitearchdir\=./.gem.20250311-59502-a3nwaq sitelibdir\=./.gem.20250311-59502-a3nwaq clean
