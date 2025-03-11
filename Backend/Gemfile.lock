@@ -342,6 +342,7 @@ DEPENDENCIES
   groupdate
   importmap-rails
   kaminari
+  logger
   open-uri
   pg
   pry
