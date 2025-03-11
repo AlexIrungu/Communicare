@@ -3,6 +3,11 @@ class Area < ApplicationRecord
   belongs_to :communicable_disease
   has_many :reviews
   has_many :donations
+  
+  # Add these new associations
+  has_many :subscriptions
+  has_many :health_alerts
+  has_many :users, through: :subscriptions
 
   validates :name, presence: true
   validates :location, presence: true

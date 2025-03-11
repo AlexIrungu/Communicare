@@ -1,7 +1,11 @@
 module Api
   module V1
     class StatisticsController < ApplicationController
-      before_action :authenticate_user! # Ensure only logged-in users can access
+      # Remove this line if statistics should be available to all authenticated users
+      # before_action :admin_only
+      
+      # ApplicationController already has before_action :authorize
+      # so all endpoints are already protected for authenticated users
 
       def index
         render json: {

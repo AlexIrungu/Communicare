@@ -50,7 +50,8 @@ module Api
       private
       
       def encode_token(payload)
-        JWT.encode(payload, Rails.application.credentials.secret_key_base, "HS256")
+        # Use the standard JWT.encode instead of your custom module method
+        ::JWT.encode(payload, Rails.application.credentials.secret_key_base, "HS256")
       end
       
       def request_logout_code

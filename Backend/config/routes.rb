@@ -23,16 +23,22 @@ Rails.application.routes.draw do
         get 'recent', on: :collection
       end
 
-      resources :resources, only: [:index, :show, :create, :update, :destroy]  # ✅ Added
+      resources :resources, only: [:index, :show, :create, :update, :destroy]
+
+      # Updated health alerts routes - add these lines
+      resources :health_alerts, path: 'health-alerts' do
+        collection do
+          post 'subscribe'
+        end
+      end
 
       post "/login", to: "sessions#create"
       delete "/logout", to: "sessions#destroy"
       get "/me", to: "users#show"
 
       get '/statistics', to: 'statistics#index'
-      get '/health-alerts', to: 'health_alerts#index'
       get '/community-reviews', to: 'community_reviews#index'
-      get "/current_user", to: "users#show"  # Add this line to your routes.rb
+      get "/current_user", to: "users#show"
     end
   end
 end

@@ -6,6 +6,7 @@ class ApplicationController < ActionController::API
   before_action :authorize
   rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
   rescue_from ActionController::ParameterMissing, with: :parameter_missing
+  rescue_from JWT::DecodeError, with: :invalid_token
 
   private
 
@@ -17,22 +18,38 @@ class ApplicationController < ActionController::API
     render json: { error: e.message }, status: :unprocessable_entity
   end
 
+  def invalid_token
+    render json: { errors: ["Invalid or expired token"] }, status: :unauthorized
+  end
+
   def authorize
-    token = request.headers['Authorization']&.split(' ')&.last
-    if token
-      decoded_token = decode_token(token)
-      @current_user = User.find_by(id: decoded_token[:user_id])
+    header = request.headers['Authorization']
+    if header
+      token = header.split(' ').last
+      begin
+        decoded_token = decode_token(token)
+        user_id = decoded_token["user_id"] || decoded_token[:user_id]
+        @current_user = User.find_by(id: user_id)
+      rescue JWT::DecodeError => e
+        Rails.logger.error "JWT decode error: #{e.message}"
+        raise
+      end
     end
-    render json: { errors: ["Not authorized"] }, status: :unauthorized unless @current_user
+    
+    unless @current_user
+      Rails.logger.info "Authorization failed: User not found or token missing"
+      render json: { errors: ["Not authorized"] }, status: :unauthorized
+    end
   end
 
   def admin_only
     render json: { errors: ["Admin access required"] }, status: :forbidden unless @current_user&.admin?
   end
-
   def decode_token(token)
-    JWT.decode(token, Rails.application.credentials.secret_key_base, true, algorithm: 'HS256').first
-  rescue JWT::DecodeError
-    nil
+    # Make sure the decoded payload is a hash before calling with_indifferent_access
+    payload = JWT.decode(token, Rails.application.credentials.secret_key_base, true, algorithm: 'HS256').first
+    
+    # Convert the payload to a hash with indifferent access if it's not already
+    payload.is_a?(Hash) ? payload.with_indifferent_access : { user_id: payload[1] }
   end
 end
